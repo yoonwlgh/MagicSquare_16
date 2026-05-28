@@ -1,0 +1,23 @@
+---
+description: MagicSquare project scope and core goals
+alwaysApply: true
+---
+
+# MagicSquare Project Rule
+
+## Mission
+- Prioritize validation of 4x4 magic-square constraints over generation logic.
+- Treat generation of a valid square as a secondary milestone.
+
+## Core Domain Contract
+- Target grid is fixed to 4x4.
+- Magic constant is fixed to 34.
+- Validation rules must be deterministic for identical inputs.
+
+## Scope Guardrails
+- In scope: validation rules, repeatable judgement, regression-safe contracts.
+- Out of scope for phase 1: UI, full-solution enumeration, n-by-n generalization.
+
+## Structure Expectations
+- Keep ECB separation: `boundary/`, `control/`, `entity/`.
+- Keep tests mirrored by layer under `tests/`.

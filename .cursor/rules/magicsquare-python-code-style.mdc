@@ -1,0 +1,20 @@
+---
+description: Python style and typing standards
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Python Code Style Rule
+
+## Version and Formatting
+- Use Python 3.10+ compatible syntax.
+- Follow PEP8 strictly.
+- Keep line length at 88 characters (Black baseline).
+
+## Typing and Documentation
+- Require type hints for all function parameters and return values.
+- Require Google-style docstrings for all public functions, methods, and classes.
+
+## Maintainability
+- Prefer explicit names over abbreviations.
+- Avoid hidden side effects in utility functions.

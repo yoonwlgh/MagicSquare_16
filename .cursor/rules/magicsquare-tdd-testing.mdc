@@ -1,0 +1,30 @@
+---
+description: Dual-track TDD workflow and pytest testing standards
+alwaysApply: true
+---
+
+# TDD and Testing Rule
+
+## Framework and Pattern
+- Use `pytest`.
+- Follow AAA pattern in tests (Arrange, Act, Assert).
+- Keep minimum coverage at 80%.
+- Test function names must start with `test_`.
+
+## Dual-Track TDD
+- Track 1 (primary): validation contract and invariant checks.
+- Track 2 (secondary): generation logic after track 1 contract is stable.
+
+## Red Phase
+- Add a failing test before implementation changes.
+- Confirm failure is caused by the intended requirement gap.
+- Do not write production implementation before RED is observed.
+
+## Green Phase
+- Implement the minimum change required to pass tests.
+- Do not refactor during GREEN.
+- Do not weaken tests to force a pass.
+
+## Refactor Phase
+- Improve structure without changing behavior.
+- Re-run full related tests and keep coverage threshold.

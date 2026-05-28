@@ -1,0 +1,22 @@
+---
+description: ECB architecture boundaries and dependency direction
+alwaysApply: true
+---
+
+# ECB Architecture Rule
+
+## Layer Responsibilities
+- `boundary`: external I/O adapters (CLI, API, request/response translation).
+- `control`: use-case orchestration and application business flow.
+- `entity`: pure domain data and invariant rules.
+
+## Dependency Direction
+- Allowed: `boundary -> control -> entity`.
+- Forbidden: `boundary -> entity` direct access.
+- Forbidden: `control -> boundary`.
+- Forbidden: any dependency from `entity` to upper layers.
+
+## Design Constraints
+- Keep domain rules inside `entity`.
+- Keep orchestration and sequencing in `control`.
+- Keep serialization/parsing concerns in `boundary`.

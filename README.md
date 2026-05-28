@@ -1,29 +1,44 @@
 # MagicSquare_JH
 
-4×4 **마방진(Magic Square)** 을 다루는 프로그램 프로젝트입니다.  
-현재는 **구현 전** 단계이며, **문제 인식·정의(STEP 1~5)** 까지 완료된 상태입니다.
+4×4 **마방진(Magic Square)** 을 다루는 TDD 훈련 프로젝트입니다.
 
----
-
-## 프로젝트 목적
-
-겉으로는 「행·열·대각선 합이 34가 되는 4×4 격자를 만든다」는 과제이지만, 이 저장소에서 다루려는 **진짜 목표**는 다음과 같습니다.
+겉으로는 「행·열·대각선 합이 34가 되는 4×4 격자를 만든다」는 과제이지만, 이 저장소의 **진짜 목표**는 다음과 같습니다.
 
 > **4×4 정수 격자가 명시된 제약을 만족하는지 판정하는 규칙을 정의하고, 그 판정을 반복 가능하게 적용하며, 기준을 테스트로 고정·회귀할 수 있게 하는 것**
 
-유효한 격자 **하나를 산출**하는 것은, 위 판정 규칙이 확립된 뒤의 **2차 목표**로 둡니다.
+유효한 격자 **하나를 산출**하는 Solver는, 위 판정 규칙이 확립된 뒤의 **2차 목표**로 둡니다.
 
 ---
 
 ## 현재 상태
 
-| 항목 | 상태 |
-|------|------|
-| 문제 정의 (STEP 1~5) | ✅ 완료 |
-| 구현·설계 | ⏳ 미착수 |
-| 테스트(TDD) | ⏳ 미착수 |
+| 단계 | 항목 | 상태 | 산출물 |
+|------|------|------|--------|
+| 1 | 문제 정의 (STEP 1~5) | ✅ 완료 | [Report/01](./Report/01MagicSquare-Problem-Definition-Report.md) |
+| 2 | TDD 설계 (판정 1차, 생성 2차) | ✅ 완료 | [Report/02](./Report/02MagicSquare-TDD-Design-Report.md) |
+| 3 | Cursor Rule + ECB User 수직 슬라이스 | ✅ 완료 | [Report/03](./Report/03MagicSquare-CursorRule-ECB-UserEntity-Implementation-Report.md) |
+| 4 | 규칙 분할 + Prompt 경로 통일 | ✅ 완료 | [Report/04](./Report/04MagicSquare-Rule-Expansion-and-Prompt-Export-Report.md) |
+| 5 | TODO Web 기술 스택 검토 | ✅ 완료 | [Report/05](./Report/05TodoWeb-Stack-Recommendation-Report.md) |
+| 6 | User Journey / Story / Scenario | ✅ 완료 | [Report/06](./Report/06MagicSquare-UserJourney-Story-Scenario-Report.md) |
+| 7 | PRD 작성 + 7기준 검토 | ✅ 완료 | [Report/07](./Report/07MagicSquare-PRD-Development-and-Review-Report.md), [docs/PRD](./docs/PRD_MagicSquare.md) |
+| 8 | 마방진 도메인 구현 (Solver/Validator) | ⏳ 미착수 | PRD FR-01~FR-05 기준 RED 테스트 대기 |
 
-상세 논의·근거는 **[문제 정의 보고서](./Report/01MagicSquare-Problem-Definition-Report.md)** 에 정리되어 있습니다.
+**코드 현황:** ECB 아키텍처 검증용 `User` 수직 슬라이스 구현 완료 — **16 tests passed** (pytest).  
+**마방진 Solver/Validator 본 구현은 PRD 기준으로 아직 착수 전입니다.**
+
+---
+
+## 진행 타임라인
+
+```text
+STEP 1~5 문제 정의
+    → TDD 설계 (불변식 I-1~I-10, P0 시나리오)
+    → ECB + Cursor Rule + User 수직 슬라이스 (개발 환경 정착)
+    → 규칙 .mdc 분할 + Prompt/Report 체계화
+    → Epic → Journey → Story → Scenario 기획
+    → PRD v0.1.0-draft + 7기준 검토
+    → [다음] Dual-Track TDD로 마방진 도메인 RED 착수
+```
 
 ---
 
@@ -40,32 +55,61 @@
 
 4×4, 값 **1~16** 각 **한 번**, **마법 상수 34**:
 
-- **I-1 ~ I-3:** 4×4 형태, 범위, 중복 없음  
-- **I-4 ~ I-7:** 각 행·열·주대각·부대각선 합 = 34  
+- **I-1 ~ I-3:** 4×4 형태, 범위, 중복 없음
+- **I-4 ~ I-7:** 각 행·열·주대각·부대각선 합 = 34
 - **I-8 ~ I-10:** 전부 만족 시에만 유효, 동일 입력 → 동일 판정, 규칙 변경은 계약(테스트) 변경
 
-### 왜 프로그램·TDD인가 (한 줄)
-
-- **프로그램:** 반복, 자동 검증, 규칙의 명시적 분해  
-- **TDD:** 다중 불변 조건과 「완성」 모호함, 검증/생성 책임 혼동을 **판정 절차**로 통제
-
-### 훈련하려는 사고 능력
-
-명세 분리, 다중 제약의 교집합, 불변식 식별, 입출력 계약, 검증 우선·회귀, 대리 지표(격자 한 장) 거부, 실패를 정보로 활용.
+상세: [Report/01 — 문제 정의 통합 보고서](./Report/01MagicSquare-Problem-Definition-Report.md)
 
 ---
 
-## 문제 정의 진행 과정 (STEP 1~5)
+## PRD 요약 (구현 전 기준)
 
-| STEP | 주제 | 핵심 |
-|------|------|------|
-| 1 | 관찰 | 4×4 격자·합 동일·1~16 제약; 「만든다」보다 규칙·검증 관점 |
-| 2 | Why #1 | 완성·제출 목적; 대리 지표·성공 기준 모호함 |
-| 3 | Why #2 | 손계산 vs 반복·검증 자동화·규칙 기반 사고 |
-| 4 | Why #3 | TDD로 판정 절차·불변식·입출력 계약 통제 |
-| 5 | 진짜 문제 정의 | 판정 중심 명세, Invariant I-1~I-10, 사고 능력 T-1~T-7 |
+| 항목 | 내용 |
+|------|------|
+| 문서 | [docs/PRD_MagicSquare.md](./docs/PRD_MagicSquare.md) |
+| ID / 버전 | PRD-MS-4X4-001 / 0.1.0-draft |
+| 핵심 FR | FR-01~FR-05 (Boundary 검증, Blank/Missing/Validator, Solver+Format) |
+| Business Rules | BR-01~BR-14 |
+| TDD 전략 | Dual-Track — Track A (Boundary Contract), Track B (Domain Invariant) |
 
-전문: [Report/01MagicSquare-Problem-Definition-Report.md](./Report/01MagicSquare-Problem-Definition-Report.md)
+### 고정 입출력 계약
+
+**Input**
+
+- 4×4 `int[][]`, `0` = 빈칸, 빈칸 정확히 2개
+- 값: `0` 또는 `1~16`, 0 제외 중복 없음
+- 첫 빈칸: row-major 최초 `0`
+
+**Output**
+
+- `int[6]`, 1-index, `[r1,c1,n1,r2,c2,n2]`
+- Attempt 1: small→blank1, large→blank2
+- Attempt 2: reverse 조합
+- Both fail: `ERR_SOLVER_NO_SOLUTION`
+
+PRD 7기준 검토 결과(부분 충족 항목·개선안): [Report/07 §5](./Report/07MagicSquare-PRD-Development-and-Review-Report.md)
+
+---
+
+## 아키텍처
+
+### ECB 레이어
+
+| 레이어 | 책임 | 예시 |
+|--------|------|------|
+| `boundary/` | 외부 I/O, 파싱·직렬화 | CLI, API adapter |
+| `control/` | 유스케이스 조율 | Solver 파이프라인 순서 |
+| `entity/` | 순수 도메인 규칙 | Validator, BlankFinder, Solver |
+
+**의존 방향:** `boundary → control → entity` (역방향 금지)
+
+### Dual-Track TDD
+
+| Track | 대상 | RED 예시 |
+|-------|------|----------|
+| Track A | Boundary 입력/출력 계약 | 빈칸 개수 오류, 중복·범위 위반 거부 |
+| Track B | Domain 불변식 | BlankFinder, MissingNumberFinder, MagicSquareValidator, Solver |
 
 ---
 
@@ -74,43 +118,121 @@
 ```text
 MagicSquare_JH/
 ├── README.md                          # 이 파일
-├── Report/
+├── .cursorrules                       # 프로젝트 규칙 요약
+├── .cursor/
+│   ├── rules/                         # 주제별 Cursor Rule (.mdc)
+│   └── agents/                        # code-reviewer, ux-design-advisor
+├── boundary/                          # ECB — 외부 I/O
+│   └── cli/user_cli_boundary.py
+├── control/                           # ECB — 유스케이스 조율
+│   └── user_control.py
+├── entity/                            # ECB — 도메인 규칙
+│   └── user.py
+├── tests/                             # 레이어별 pytest (AAA)
+│   ├── boundary/test_user_cli_boundary.py
+│   ├── control/test_user_control.py
+│   └── entity/test_user.py
+├── docs/
+│   └── PRD_MagicSquare.md             # 구현 전 PRD (23개 섹션)
+├── Report/                            # 단계별 보고서
 │   ├── README.md
-│   └── 01MagicSquare-Problem-Definition-Report.md   # 문제 정의 통합 보고서
-└── Prompting/                         # 문제 정의 대화·프롬프트 기록 (참고)
+│   ├── 01MagicSquare-Problem-Definition-Report.md
+│   ├── 02MagicSquare-TDD-Design-Report.md
+│   ├── 03MagicSquare-CursorRule-ECB-UserEntity-Implementation-Report.md
+│   ├── 04MagicSquare-Rule-Expansion-and-Prompt-Export-Report.md
+│   ├── 05TodoWeb-Stack-Recommendation-Report.md
+│   ├── 06MagicSquare-UserJourney-Story-Scenario-Report.md
+│   └── 07MagicSquare-PRD-Development-and-Review-Report.md
+└── Prompt/                            # Cursor 대화·프롬프트 기록
+    ├── 01cursor_4x4_magic_square_problem_definit.md
+    ├── 02cursor_magicsquare_tdd_prompt_transcript.md
+    ├── 03cursor_magicsquare_rule_ecb_transcript.md
+    ├── 04cursor_magicsquare_rule_expansion_transcript.md
+    ├── 05todo_web_stack_recommendation_transcript.md
+    └── 06cursor_magicsquare_user_journey_story_scenario_transcript.md
 ```
 
 ---
 
-## 범위 (현 단계)
+## 개발 환경 및 테스트
 
-### In scope (문제 정의 기준)
+### 요구 사항
 
-- 4×4 정수 격자에 대한 **유효성 판정** 규칙
-- 불변 조건 I-1 ~ I-10
-- 판정의 반복 가능성·테스트로 고정
+- Python 3.10+
+- pytest
 
-### Out of scope (아직)
+### 테스트 실행
 
-- 구현 언어·프레임워크 선정
-- 모든 해 나열, UI, n×n 일반화
-- 구체적 생성 방법·알고리즘
+```bash
+python -m pytest tests/ -v
+```
 
----
+현재 ECB 검증용 User 슬라이스: **16 passed**
 
-## 다음 단계 (예정)
+### Cursor Rule (.cursor/rules/)
 
-1. In scope / Out of scope 명세 확정  
-2. 최소 판정 시나리오 목록 (유효·무효 유형별)  
-3. TDD 기반 구현 착수 (판정 → 필요 시 생성)
-
----
-
-## 문서
-
-| 문서 | 설명 |
+| 파일 | 내용 |
 |------|------|
-| [01MagicSquare-Problem-Definition-Report.md](./Report/01MagicSquare-Problem-Definition-Report.md) | STEP 1~5 통합 보고서 (2026-05-28) |
+| `magicsquare-project.mdc` | 프로젝트 범위, 마방진 도메인 목표 |
+| `magicsquare-ecb-architecture.mdc` | ECB 레이어 책임·의존 방향 |
+| `magicsquare-tdd-testing.mdc` | Dual-Track TDD, pytest, AAA, 80% 커버리지 |
+| `magicsquare-python-code-style.mdc` | PEP8, 타입 힌트, Google docstring |
+| `magicsquare-forbidden.mdc` | print 금지, bare except 금지, RED 선행 등 |
+
+---
+
+## User Story 요약 (Report/06)
+
+| Story | 레이어 | 내용 |
+|-------|--------|------|
+| 1 | Boundary | 4×4, 빈칸 2개, 값 범위, 0 제외 중복 검증 — 실패 시 Domain 미호출 |
+| 2 | Domain | `BlankFinder` — 0 탐지, 2개 좌표, row-major 순서 |
+| 3 | Domain | `MissingNumberFinder` — 1~16 누락 2개, 오름차순 |
+| 4 | Domain | `MagicSquareValidator` — 행/열/대각 합 34 동시 만족 |
+| 5 | Control/Boundary | Solver — small-first 실패 시 reverse, `int[6]` 형식 보장 |
+
+---
+
+## 범위
+
+### In scope
+
+- 4×4 정수 격자 유효성 **판정** 규칙 (I-1 ~ I-10)
+- 빈칸 2개 Solver 입출력 계약 (PRD §12)
+- ECB 분리, Dual-Track TDD, pytest 회귀 보호
+- 판정·Solver 규칙의 반복 가능성·테스트 고정
+
+### Out of scope (현 단계)
+
+- UI / Web / DB
+- n×n 일반화, 모든 해 나열
+- TODO Web 실제 구현 (Report/05는 기술 스택 **검토**만)
+
+---
+
+## 다음 단계
+
+1. PRD 검토 P0 이슈 반영 (테스트 데이터 TD-01/TD-02, Traceability Matrix 보완)
+2. Story/Scenario 단위 **RED** 테스트 작성 (Boundary → Domain 순)
+3. Dual-Track TDD: Track A(Boundary Contract) + Track B(Domain Invariant)
+4. `BlankFinder` → `MissingNumberFinder` → `MagicSquareValidator` → `Solver` 순 구현
+5. Domain Logic 커버리지 95%+, Boundary 계약 테스트 100% 목표 (Epic 성공 기준)
+
+---
+
+## 문서 인덱스
+
+| 문서 | 설명 | 작성일 |
+|------|------|--------|
+| [Report/01 — 문제 정의](./Report/01MagicSquare-Problem-Definition-Report.md) | STEP 1~5 통합 (Invariant I-1~I-10) | 2026-05-28 |
+| [Report/02 — TDD 설계](./Report/02MagicSquare-TDD-Design-Report.md) | 판정 1차·생성 2차, P0 시나리오 | 2026-05-28 |
+| [Report/03 — ECB User 구현](./Report/03MagicSquare-CursorRule-ECB-UserEntity-Implementation-Report.md) | Cursor Rule + User 수직 슬라이스 | 2026-05-28 |
+| [Report/04 — 규칙 확장](./Report/04MagicSquare-Rule-Expansion-and-Prompt-Export-Report.md) | .mdc 분할, Prompt 경로 통일 | 2026-05-28 |
+| [Report/05 — TODO Web 스택](./Report/05TodoWeb-Stack-Recommendation-Report.md) | React+TS+Vite 권장 (참고용) | 2026-05-28 |
+| [Report/06 — Journey/Story/Scenario](./Report/06MagicSquare-UserJourney-Story-Scenario-Report.md) | Epic~Level 4 시나리오 | 2026-05-28 |
+| [Report/07 — PRD 작성·검토](./Report/07MagicSquare-PRD-Development-and-Review-Report.md) | PRD 산출 + 7기준 검토 | 2026-05-29 |
+| [docs/PRD_MagicSquare.md](./docs/PRD_MagicSquare.md) | 구현 전 PRD 본문 (23개 섹션) | 2026-05-29 |
+| [Report/README.md](./Report/README.md) | Report 폴더 목차 | — |
 
 ---
 

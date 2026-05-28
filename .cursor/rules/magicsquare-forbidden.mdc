@@ -1,0 +1,19 @@
+---
+description: Forbidden patterns and mandatory alternatives
+alwaysApply: true
+---
+
+# Forbidden Rule
+
+## Disallowed Patterns
+- Do not use `print()` for debugging.
+- Do not use bare `except:`.
+- Do not introduce unexplained hardcoded constants (magic numbers/strings).
+- Do not start implementation without a preceding RED test.
+- Do not weaken tests (skip abuse, assertion removal, expectation softening).
+
+## Required Alternatives
+- Use `logging` and assertion messages instead of `print()`.
+- Catch explicit exception types with meaningful handling.
+- Extract named constants or enums for domain values.
+- Follow Red -> Green -> Refactor sequence strictly.
