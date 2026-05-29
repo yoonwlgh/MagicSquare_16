@@ -338,7 +338,7 @@ P0 테스트 보강 → P0 ECB 분리 → P1 SRP 분리 → P2 계약·중복·�
 |------|-----|------|------|------|
 | [x] | C-1a | `control/magic_square_resolver.py:22` | Solver 호출 + ErrorResponse 조립 | `SolverErrorMapper` (Extract Class) |
 | [x] | C-1b | `boundary/result_formatter.py:11` | 계약 검증 + int[6] 정규화 | `Int6ContractValidator` + Formatter 분리 |
-| [ ] | C-1c | `boundary/screen/presenter.py:12` | use-case 위임 + 출력 포맷 | `ViewFormatter` (Extract Class) |
+| [x] | C-1c | `boundary/screen/presenter.py:12` | use-case 위임 + 출력 포맷 | `ViewFormatter` (Extract Class) |
 
 #### C-2 UI / CLI · P2
 
