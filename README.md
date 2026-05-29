@@ -367,7 +367,7 @@ P0 테스트 보강 → P0 ECB 분리 → P1 SRP 분리 → P2 계약·중복·�
 | 상태 | ID | 대상 | 문제 | 조치 | 우선순위 |
 |------|-----|------|------|------|----------|
 | [x] | E-1 | `test_u_out_result_format.py` | `Solver()` 직접 호출 — Entity 우회 | Control + `ResultFormatter` E2E | P2 |
-| [ ] | E-2 | `pytest.ini` / CI | cov threshold 미적용 | boundary/control 85%+, 전체 90%+ | P2 |
+| [x] | E-2 | `pytest.ini` / CI | cov threshold 미적용 | boundary/control 85%+, 전체 90%+ | P2 |
 | [ ] | E-3 | `defect_list.md` | 80 passed와 불일치 | CLOSE/OPEN 상태 갱신 | P3 |
 
 ---
@@ -385,7 +385,7 @@ Phase 1 (P1)
 Phase 2 (P2)
   [x] D-1 ~ D-4
   [x] C-2a, C-2b
-  [ ] E-1, E-2
+  [x] E-1, E-2
   [ ] (선택) A-6
 
 Phase 3 (P3)
