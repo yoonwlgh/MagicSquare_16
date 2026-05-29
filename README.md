@@ -220,6 +220,37 @@ python -m pytest tests/ -v
 
 ---
 
+## RED 단계 To-Do 리스트
+
+> 이 체크리스트는 test_plan.md 기반으로 생성되었습니다.
+> 각 항목은 RED(실패 테스트 작성) 완료 시 체크합니다.
+
+### Track A — UI / Boundary 테스트
+- [ ] TC-A-01: grid=None 입력 → 실패 결과 반환 (Happy Path of Failure)
+- [ ] TC-A-02: code가 정확히 "INVALID_SIZE" 문자열인지 검증
+- [ ] TC-A-03: message가 "Grid must be 4x4." 와 문자 단위 동일한지 검증
+- [ ] TC-A-04: grid=None 시 Domain 진입점 0회 호출 (mock/spy 검증)
+- [ ] TC-A-05: grid=[] 빈 리스트 → 실패 결과 반환
+- [ ] TC-A-06: grid=3×4 크기 불일치 → 실패 결과 반환
+- [ ] TC-A-07: 반환 객체 타입이 지정 실패 결과 구조체인지 검증
+
+### Track B — Domain / Logic 테스트
+- [ ] TC-B-01: resolve()가 None grid를 직접 받지 않음을 격리 검증
+- [ ] TC-B-02: Boundary가 None 분기를 처리 후 resolve() 미호출 확인
+- [ ] TC-B-03: resolve() mock이 호출됐을 경우 테스트 실패 처리
+- [ ] TC-B-04: AC-FR-01-02~05 범위의 케이스는 이 커밋에 포함하지 않음 확인
+
+### 커버리지 목표
+- [ ] Domain Logic: 95%+ (pip install pytest-cov)
+- [ ] Boundary Layer: 85%+
+- [ ] 전체 TOTAL: 90%+
+
+### 결함 목록 연결
+- [x] defect_list.md 생성 및 발견 결함 기록 — [defect_list.md](./defect_list.md) (DEF-001~006, 24 failed → 5 root causes)
+- [ ] 모든 결함 수정 후 회귀 테스트 통과 확인
+
+---
+
 ## 문서 인덱스
 
 | 문서 | 설명 | 작성일 |
@@ -231,6 +262,9 @@ python -m pytest tests/ -v
 | [Report/05 — TODO Web 스택](./Report/05TodoWeb-Stack-Recommendation-Report.md) | React+TS+Vite 권장 (참고용) | 2026-05-28 |
 | [Report/06 — Journey/Story/Scenario](./Report/06MagicSquare-UserJourney-Story-Scenario-Report.md) | Epic~Level 4 시나리오 | 2026-05-28 |
 | [Report/07 — PRD 작성·검토](./Report/07MagicSquare-PRD-Development-and-Review-Report.md) | PRD 산출 + 7기준 검토 | 2026-05-29 |
+| [Report/08 — TDD 시작·To-Do](./Report/08MagicSquare-TDD-Start-ToDo-README-Report.md) | 샘플 AC-FR01-01 선정·추적 보드·README RED To-Do | 2026-05-29 |
+| [Report/09 — AC-FR01-01 RED·HTML](./Report/09MagicSquare-AC-FR01-01-RED-Test-HTML-Report.md) | RED 25건·venv·HTML·[defect_list.md](./defect_list.md) | 2026-05-29 |
+| [Report/10 — Dual-Track RED Skeleton](./Report/10MagicSquare-DualTrack-RED-Skeleton-Report.md) | U-IN/U-OUT/U-FLOW·D-* 스켈레톤 21건 | 2026-05-29 |
 | [docs/PRD_MagicSquare.md](./docs/PRD_MagicSquare.md) | 구현 전 PRD 본문 (23개 섹션) | 2026-05-29 |
 | [Report/README.md](./Report/README.md) | Report 폴더 목차 | — |
 

@@ -6,6 +6,9 @@ __pycache__/
 .ruff_cache/
 .coverage
 htmlcov/
+# Pytest HTML (on Windows do not use ignore pattern "report/" — clashes with Report/)
+Report/pytest_report.html
+test_reports/
 .venv/
 venv/
 .env
