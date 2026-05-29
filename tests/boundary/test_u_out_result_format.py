@@ -2,14 +2,31 @@
 
 from __future__ import annotations
 
+import pytest
+
+from boundary.magic_square.boundary_validator import BoundaryValidator
 from boundary.result_formatter import ResultFormatter
-from entity.services.solver import Solver
+from control.application_contracts import ApplicationError
+from control.magic_square_control import MagicSquareControl
+from control.magic_square_resolver import MagicSquareDomainResolver
 from tests.conftest import grid_g3_reverse_success
 
 AC_DOCSTRING = "U-OUT, FR-05, PRD §12.2 — int[6] success output contract."
 
 # TD-01 reverse-success on grid_g3 (SC-DOM-SOL-001)
 REVERSE_SUCCESS_INT6 = [3, 3, 7, 4, 4, 1]
+
+
+def _solve_via_control(grid: list[list[int]]) -> list[int]:
+    """Run solve through Control after boundary validation (E-1)."""
+    control = MagicSquareControl(
+        boundary_validator=BoundaryValidator(),
+        resolver=MagicSquareDomainResolver(),
+    )
+    outcome = control.solve(grid)
+    if isinstance(outcome, ApplicationError):
+        pytest.fail(f"Expected solve success, got {outcome.code}: {outcome.message}")
+    return outcome
 
 
 class TestUOut01ResultLength:
@@ -20,7 +37,7 @@ class TestUOut01ResultLength:
         """U-OUT-01 — formatted result has len == 6 (AC-FR05-04)."""
         # Given
         formatter = ResultFormatter()
-        internal = Solver().solve(grid_g3_reverse_success())
+        internal = _solve_via_control(grid_g3_reverse_success())
 
         # When
         result = formatter.to_int6(internal)
@@ -37,7 +54,7 @@ class TestUOut02OneIndexedCoordinates:
         """U-OUT-02 — r1,c1,r2,c2 in 1..4 (AC-FR05-05, BS-04)."""
         # Given
         formatter = ResultFormatter()
-        internal = Solver().solve(grid_g3_reverse_success())
+        internal = _solve_via_control(grid_g3_reverse_success())
 
         # When
         result = formatter.to_int6(internal)
@@ -56,10 +73,41 @@ class TestUOut03TupleOrder:
         """U-OUT-03 — reverse success order (AC-FR05-02, TD-01)."""
         # Given
         formatter = ResultFormatter()
-        internal = Solver().solve(grid_g3_reverse_success())
+        internal = _solve_via_control(grid_g3_reverse_success())
 
         # When
         result = formatter.to_int6(internal)
 
         # Then
         assert result == REVERSE_SUCCESS_INT6
+
+
+class TestUOut04FormatterNegativePaths:
+    """A-5 / U-OUT — invalid internal payloads raise ValueError."""
+
+    def test_u_out_04_non_list_internal_raises_value_error(self) -> None:
+        """A-5 — non-list internal payload rejected."""
+        # Given
+        formatter = ResultFormatter()
+
+        # When / Then
+        with pytest.raises(ValueError, match="must be a list"):
+            formatter.to_int6("not-a-list")
+
+    def test_u_out_04_wrong_length_raises_value_error(self) -> None:
+        """A-5 — payload length != 6 rejected."""
+        # Given
+        formatter = ResultFormatter()
+
+        # When / Then
+        with pytest.raises(ValueError, match="length 6"):
+            formatter.to_int6([1, 2, 3])
+
+    def test_u_out_04_out_of_bounds_coordinate_raises_value_error(self) -> None:
+        """A-5 — coordinate outside 1..4 rejected."""
+        # Given
+        formatter = ResultFormatter()
+
+        # When / Then
+        with pytest.raises(ValueError, match="1-indexed"):
+            formatter.to_int6([0, 1, 2, 3, 4, 5])

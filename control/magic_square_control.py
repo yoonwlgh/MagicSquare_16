@@ -1,17 +1,9 @@
 """Control orchestration for magic square solve use-case."""
 
-from typing import Any, Protocol
+from typing import Any
 
-from boundary.magic_square.boundary_validator import BoundaryValidator
-from boundary.magic_square.contracts import ErrorResponse
-
-
-class DomainResolver(Protocol):
-    """Domain pipeline entry (FR-02~FR-05); must not run on Boundary failure."""
-
-    def resolve(self, grid: list[list[int]]) -> Any:
-        """Run domain solver pipeline on a validated grid."""
-        ...
+from control.application_contracts import ApplicationError
+from control.ports import DomainResolver, ValidationPort
 
 
 class MagicSquareControl:
@@ -19,15 +11,15 @@ class MagicSquareControl:
 
     def __init__(
         self,
-        boundary_validator: BoundaryValidator,
+        boundary_validator: ValidationPort,
         resolver: DomainResolver,
     ) -> None:
         self._boundary_validator = boundary_validator
         self._resolver = resolver
 
-    def solve(self, grid: list[list[int]] | None) -> ErrorResponse | Any:
+    def solve(self, grid: list[list[int]] | None) -> ApplicationError | Any:
         """Validate grid at Boundary; call resolve only when validation passes."""
         validation_error = self._boundary_validator.validate(grid)
         if validation_error is not None:
             return validation_error
-        return self._resolver.resolve(grid)  # type: ignore[arg-type]
+        return self._resolver.resolve(grid)

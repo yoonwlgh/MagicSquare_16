@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from boundary.magic_square.contracts import ErrorResponse, GRID_SIZE
+from control.application_contracts import ApplicationError
 from entity.services.blank_finder import BlankFinder
 from entity.services.missing_number_finder import MissingNumberFinder
 from tests.golden_master.scenarios import GoldenScenario, SolveStrategy
@@ -70,7 +71,10 @@ def assert_reverse_fallback_combination(result: list[int], grid: list[list[int]]
     )
 
 
-def assert_error_contract(result: ErrorResponse, scenario: GoldenScenario) -> None:
+def assert_error_contract(
+    result: ErrorResponse | ApplicationError,
+    scenario: GoldenScenario,
+) -> None:
     """Assert structured error response matches scenario contract."""
     assert scenario.expected_error_code is not None
     assert scenario.expected_layer is not None

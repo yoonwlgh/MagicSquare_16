@@ -6,11 +6,11 @@ from boundary.magic_square.contracts import (
     ERR_DUPLICATE_VALUE_MESSAGE,
     ERR_INVALID_BLANK_COUNT_CODE,
     ERR_INVALID_BLANK_COUNT_MESSAGE,
+    ERR_INVALID_SHAPE_CODE,
+    ERR_INVALID_SHAPE_MESSAGE,
     ERR_OUT_OF_RANGE_CODE,
     ERR_OUT_OF_RANGE_MESSAGE,
     GRID_SIZE,
-    INVALID_SIZE_CODE,
-    INVALID_SIZE_MESSAGE,
     MAX_CELL_VALUE,
     MIN_CELL_VALUE,
     REQUIRED_BLANK_COUNT,
@@ -26,12 +26,27 @@ class BoundaryValidator:
 
         GREEN (AC-FR-01-01~04): shape, blank count, range, duplicate checks.
         """
+        shape_error = self._validate_shape(grid)
+        if shape_error is not None:
+            return shape_error
+
+        blank_error = self._validate_blank_count(grid)
+        if blank_error is not None:
+            return blank_error
+
+        return self._validate_values(grid)
+
+    def _validate_shape(self, grid: list[list[int]] | None) -> ErrorResponse | None:
+        """Return shape failure when grid is not a 4x4 matrix."""
         if grid is None or not self._is_4x4_shape(grid):
             return ErrorResponse(
-                code=INVALID_SIZE_CODE,
-                message=INVALID_SIZE_MESSAGE,
+                code=ERR_INVALID_SHAPE_CODE,
+                message=ERR_INVALID_SHAPE_MESSAGE,
             )
+        return None
 
+    def _validate_blank_count(self, grid: list[list[int]]) -> ErrorResponse | None:
+        """Return failure when blank cell count is not exactly two."""
         blank_count = sum(
             1 for row in grid for value in row if value == BLANK_CELL_VALUE
         )
@@ -40,7 +55,10 @@ class BoundaryValidator:
                 code=ERR_INVALID_BLANK_COUNT_CODE,
                 message=ERR_INVALID_BLANK_COUNT_MESSAGE,
             )
+        return None
 
+    def _validate_values(self, grid: list[list[int]]) -> ErrorResponse | None:
+        """Return failure on out-of-range or duplicate non-zero cell values."""
         seen_non_zero: set[int] = set()
         for row in grid:
             for value in row:
@@ -57,7 +75,6 @@ class BoundaryValidator:
                         message=ERR_DUPLICATE_VALUE_MESSAGE,
                     )
                 seen_non_zero.add(value)
-
         return None
 
     @staticmethod
