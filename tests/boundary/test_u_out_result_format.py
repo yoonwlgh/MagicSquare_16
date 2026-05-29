@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-import pytest
-
 from boundary.result_formatter import ResultFormatter
+from entity.services.solver import Solver
+from tests.conftest import grid_g3_reverse_success
 
 AC_DOCSTRING = "U-OUT, FR-05, PRD §12.2 — int[6] success output contract."
+
+# TD-01 reverse-success on grid_g3 (SC-DOM-SOL-001)
+REVERSE_SUCCESS_INT6 = [3, 3, 7, 4, 4, 1]
 
 
 class TestUOut01ResultLength:
@@ -16,14 +19,14 @@ class TestUOut01ResultLength:
     def test_u_out_01_success_payload_length_is_six(self) -> None:
         """U-OUT-01 — formatted result has len == 6 (AC-FR05-04)."""
         # Given
-        # formatter = ResultFormatter()
-        # internal = ...  # successful solve internal DTO
+        formatter = ResultFormatter()
+        internal = Solver().solve(grid_g3_reverse_success())
 
         # When
-        # result = formatter.to_int6(internal)
+        result = formatter.to_int6(internal)
 
         # Then
-        pytest.fail("RED: U-OUT-01 — success int[6] length must be 6")
+        assert len(result) == 6
 
 
 class TestUOut02OneIndexedCoordinates:
@@ -33,14 +36,16 @@ class TestUOut02OneIndexedCoordinates:
     def test_u_out_02_coordinates_are_one_indexed(self) -> None:
         """U-OUT-02 — r1,c1,r2,c2 in 1..4 (AC-FR05-05, BS-04)."""
         # Given
-        # formatter = ResultFormatter()
-        # internal = ...  # 0-index blanks at edges
+        formatter = ResultFormatter()
+        internal = Solver().solve(grid_g3_reverse_success())
 
         # When
-        # result = formatter.to_int6(internal)
+        result = formatter.to_int6(internal)
 
         # Then
-        pytest.fail("RED: U-OUT-02 — output coordinates 1-indexed in 1..4")
+        row1, col1, _, row2, col2, _ = result
+        for coordinate in (row1, col1, row2, col2):
+            assert 1 <= coordinate <= 4
 
 
 class TestUOut03TupleOrder:
@@ -48,13 +53,13 @@ class TestUOut03TupleOrder:
 
     # U-OUT-03
     def test_u_out_03_reverse_success_tuple_order(self) -> None:
-        """U-OUT-03 — reverse success [3,3,6,4,4,1] order (AC-FR05-02, TD-01)."""
+        """U-OUT-03 — reverse success order (AC-FR05-02, TD-01)."""
         # Given
-        # formatter = ResultFormatter()
-        # internal = ...  # SC-DOM-SOL-001 reverse attempt values
+        formatter = ResultFormatter()
+        internal = Solver().solve(grid_g3_reverse_success())
 
         # When
-        # result = formatter.to_int6(internal)
+        result = formatter.to_int6(internal)
 
         # Then
-        pytest.fail("RED: U-OUT-03 — [r1,c1,n1,r2,c2,n2] reverse-success order")
+        assert result == REVERSE_SUCCESS_INT6

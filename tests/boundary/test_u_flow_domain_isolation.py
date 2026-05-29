@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
-import pytest
+from unittest.mock import MagicMock
 
-from boundary.input_validator import InputValidator
+from boundary.magic_square.boundary_validator import BoundaryValidator
+from boundary.magic_square.contracts import ERR_INVALID_BLANK_COUNT_CODE, ErrorResponse
 from control.magic_square_control import MagicSquareControl
+from tests.conftest import grid_three_blanks
 
 AC_DOCSTRING = (
     "U-FLOW-02, BR-05, EP-01 — blank-count / range / duplicate failure "
@@ -22,15 +24,15 @@ class TestUFlow02BlankCountBlocksDomain:
     ) -> None:
         """U-FLOW-02 — three blanks: Control.solve, Domain spy call_count == 0."""
         # Given
-        # validator = InputValidator()
-        # control = MagicSquareControl(boundary_validator=validator, resolver=spy)
-        # grid = ...  # three 0 cells (U-IN-06 class input)
-        # spy: domain_resolver_mock.resolve / BlankFinder / MissingNumberFinder
+        validator = BoundaryValidator()
+        resolver = MagicMock()
+        control = MagicSquareControl(boundary_validator=validator, resolver=resolver)
+        grid = grid_three_blanks()
 
         # When
-        # result = control.solve(grid)
+        result = control.solve(grid)
 
         # Then
-        pytest.fail(
-            "RED: U-FLOW-02 — blank-count failure → Domain pipeline 0 calls"
-        )
+        assert isinstance(result, ErrorResponse)
+        assert result.code == ERR_INVALID_BLANK_COUNT_CODE
+        assert resolver.resolve.call_count == 0

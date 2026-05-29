@@ -26,10 +26,7 @@ class MagicSquareControl:
         self._resolver = resolver
 
     def solve(self, grid: list[list[int]] | None) -> ErrorResponse | Any:
-        """Validate grid at Boundary; call resolve only when validation passes.
-
-        RED stub: always invokes resolve() so isolation tests fail until GREEN.
-        """
+        """Validate grid at Boundary; call resolve only when validation passes."""
         validation_error = self._boundary_validator.validate(grid)
         if validation_error is not None:
             return validation_error

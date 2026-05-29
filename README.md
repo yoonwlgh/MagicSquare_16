@@ -23,8 +23,8 @@
 | 7 | PRD 작성 + 7기준 검토 | ✅ 완료 | [Report/07](./Report/07MagicSquare-PRD-Development-and-Review-Report.md), [docs/PRD](./docs/PRD_MagicSquare.md) |
 | 8 | 마방진 도메인 구현 (Solver/Validator) | 🟡 진행 중 | AC-FR-01-01 GREEN 완료; Dual-Track 스켈레톤 GREEN 대기 |
 
-**코드 현황:** ECB `User` 슬라이스 **16 passed** + 마방진 Dual-Track **46건** (AC-FR-01-01 GREEN 25 + RED 스켈레톤 21).  
-**전체 pytest:** `62 collected` — **41 passed / 21 failed** (실패 21건은 RED 스켈레톤 `pytest.fail` 전용).
+**코드 현황:** ECB `User` 슬라이스 **16 passed** + 마방진 Dual-Track **46건** (전체 GREEN).  
+**전체 pytest:** `62 collected` — **62 passed**.
 
 ---
 
@@ -194,9 +194,9 @@ python -m pytest tests/ -v `
 | 구분 | passed | 비고 |
 |------|--------|------|
 | User ECB 슬라이스 | 16 | `test_user*.py` |
-| AC-FR-01-01 (GREEN) | 25 | `test_ac_fr01_01_invalid_size.py` |
-| Dual-Track RED 스켈레톤 | 0 / 21 | `pytest.fail` — GREEN 미착수 |
-| **합계** | **41 / 62** | `python -m pytest tests/ -v` |
+| AC-FR-01-01 | 25 | `test_ac_fr01_01_invalid_size.py` |
+| Dual-Track U-IN/U-FLOW/U-OUT + D-* | 21 | Track A/B GREEN 완료 |
+| **합계** | **62 / 62** | `python -m pytest tests/ -v` |
 
 ### Cursor Rule (.cursor/rules/)
 
@@ -274,42 +274,36 @@ python -m pytest tests/ -v `
 
 **실행:** `python -m pytest tests/boundary/test_ac_fr01_01_invalid_size.py -v` → **25 passed**
 
-### Track A — Boundary / Control (GREEN 대기 9건)
-
-> RED 스켈레톤만 존재 — Given/When/Then 주석 + `pytest.fail`. GREEN 전 assert 활성화 필요.
+### Track A — Boundary / Control (GREEN 완료 9건)
 
 | 상태 | TC ID | 테스트 파일 | 내용 | AC |
 |------|-------|-------------|------|-----|
-| [ ] GREEN | U-IN-04 | `test_u_in_input_validation.py` | 빈칸 0개 → `ERR_INVALID_BLANK_COUNT` | AC-FR01-02 |
-| [ ] GREEN | U-IN-05 | 동일 | 빈칸 1개 → `ERR_INVALID_BLANK_COUNT` | AC-FR01-02 |
-| [ ] GREEN | U-IN-06 | 동일 | 빈칸 3개 → `ERR_INVALID_BLANK_COUNT` | AC-FR01-02 |
-| [ ] GREEN | U-IN-07 | 동일 | 값 17 → `ERR_OUT_OF_RANGE` | AC-FR01-03 |
-| [ ] GREEN | U-IN-08 | 동일 | non-zero 중복 → `ERR_DUPLICATE_VALUE` | AC-FR01-04 |
-| [ ] GREEN | U-FLOW-02 | `test_u_flow_domain_isolation.py` | blank-count 실패 시 Domain 0회 | BR-05 |
-| [ ] GREEN | U-OUT-01 | `test_u_out_result_format.py` | 성공 payload `len == 6` | AC-FR05-04 |
-| [ ] GREEN | U-OUT-02 | 동일 | 좌표 1-indexed (1..4) | AC-FR05-05 |
-| [ ] GREEN | U-OUT-03 | 동일 | `[r1,c1,n1,r2,c2,n2]` reverse 순서 | AC-FR05-02 |
+| [x] GREEN | U-IN-04 | `test_u_in_input_validation.py` | 빈칸 0개 → `ERR_INVALID_BLANK_COUNT` | AC-FR01-02 |
+| [x] GREEN | U-IN-05 | 동일 | 빈칸 1개 → `ERR_INVALID_BLANK_COUNT` | AC-FR01-02 |
+| [x] GREEN | U-IN-06 | 동일 | 빈칸 3개 → `ERR_INVALID_BLANK_COUNT` | AC-FR01-02 |
+| [x] GREEN | U-IN-07 | 동일 | 값 17 → `ERR_OUT_OF_RANGE` | AC-FR01-03 |
+| [x] GREEN | U-IN-08 | 동일 | non-zero 중복 → `ERR_DUPLICATE_VALUE` | AC-FR01-04 |
+| [x] GREEN | U-FLOW-02 | `test_u_flow_domain_isolation.py` | blank-count 실패 시 Domain 0회 | BR-05 |
+| [x] GREEN | U-OUT-01 | `test_u_out_result_format.py` | 성공 payload `len == 6` | AC-FR05-04 |
+| [x] GREEN | U-OUT-02 | 동일 | 좌표 1-indexed (1..4) | AC-FR05-05 |
+| [x] GREEN | U-OUT-03 | 동일 | reverse `[3,3,7,4,4,1]` (TD-01) | AC-FR05-02 |
 
-**권장 GREEN 순서:** U-IN-04~06 → U-IN-07 → U-IN-08 → U-FLOW-02 → (Track B Solver 후) U-OUT-01~03
-
-### Track B — Domain / Entity (GREEN 대기 12건)
+### Track B — Domain / Entity (GREEN 완료 12건)
 
 | 상태 | TC ID | 테스트 파일 | 내용 | FR |
 |------|-------|-------------|------|-----|
-| [ ] GREEN | D-LOC-01 | `test_d_loc_blank_finder.py` | `BlankFinder` row-major 2좌표 | FR-02 |
-| [ ] GREEN | D-MIS-01 | `test_d_mis_missing_number_finder.py` | `MissingNumberFinder` [small, large] | FR-03 |
-| [ ] GREEN | D-VAL-01 | `test_d_val_magic_square_validator.py` | 행 합 = 34 | FR-04 |
-| [ ] GREEN | D-VAL-02 | 동일 | 열 합 = 34 | FR-04 |
-| [ ] GREEN | D-VAL-03 | 동일 | 주대각 합 = 34 | FR-04 |
-| [ ] GREEN | D-VAL-04 | 동일 | 부대각 합 = 34 | FR-04 |
-| [ ] GREEN | D-VAL-05 | 동일 | 완전 마방진 → valid | FR-04 |
-| [ ] GREEN | D-VAL-06 | 동일 | 한 줄 합 ≠ 34 → invalid | FR-04 |
-| [ ] GREEN | D-SOL-01 | `test_d_sol_solver.py` | reverse 성공 `[3,3,6,4,4,1]` | FR-05 |
-| [ ] GREEN | D-SOL-02 | 동일 | small-first 성공 (G2 TBD) | FR-05 |
-| [ ] GREEN | D-SOL-03 | 동일 | 두 조합 실패 → no solution | FR-05 |
-| [ ] GREEN | D-SOL-04 | 동일 | solve 후 입력 grid 불변 | FR-05 |
-
-**권장 GREEN 순서:** D-LOC-01 → D-MIS-01 → D-VAL-01~06 → D-SOL-01~04
+| [x] GREEN | D-LOC-01 | `test_d_loc_blank_finder.py` | `BlankFinder` row-major 2좌표 | FR-02 |
+| [x] GREEN | D-MIS-01 | `test_d_mis_missing_number_finder.py` | `MissingNumberFinder` [small, large] | FR-03 |
+| [x] GREEN | D-VAL-01 | `test_d_val_magic_square_validator.py` | 행 합 = 34 | FR-04 |
+| [x] GREEN | D-VAL-02 | 동일 | 열 합 = 34 | FR-04 |
+| [x] GREEN | D-VAL-03 | 동일 | 주대각 합 = 34 | FR-04 |
+| [x] GREEN | D-VAL-04 | 동일 | 부대각 합 = 34 | FR-04 |
+| [x] GREEN | D-VAL-05 | 동일 | 완전 마방진 → valid | FR-04 |
+| [x] GREEN | D-VAL-06 | 동일 | 한 줄 합 ≠ 34 → invalid | FR-04 |
+| [x] GREEN | D-SOL-01 | `test_d_sol_solver.py` | reverse `[3,3,7,4,4,1]` | FR-05 |
+| [x] GREEN | D-SOL-02 | 동일 | small-first `[3,2,6,3,3,7]` | FR-05 |
+| [x] GREEN | D-SOL-03 | 동일 | 두 조합 실패 → `SolverNoSolutionError` | FR-05 |
+| [x] GREEN | D-SOL-04 | 동일 | solve 후 입력 grid 불변 | FR-05 |
 
 ### 커버리지 목표
 
@@ -321,8 +315,8 @@ python -m pytest tests/ -v `
 
 - [x] defect_list.md 생성 — [defect_list.md](./defect_list.md)
 - [x] DEF-001~005 CLOSE — AC-FR-01-01 GREEN (`test_ac_fr01_01_invalid_size.py` 25 passed)
-- [ ] DEF-006 이후 · Track A/B 스켈레톤 결함 — GREEN 착수 시 갱신
-- [ ] 전체 회귀 `python -m pytest tests/` → 62 passed
+- [x] DEF-006 이후 · Track A/B 스켈레톤 — Dual-Track GREEN 완료
+- [x] 전체 회귀 `python -m pytest tests/` → **62 passed**
 
 ---
 

@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-import pytest
-
 from entity.services.missing_number_finder import MissingNumberFinder
+from tests.conftest import grid_g1_two_blanks
 
 AC_DOCSTRING = "D-MIS-01, FR-03, AC-FR03-01/02 — [small, large] ascending, 0 excluded."
 
@@ -16,11 +15,12 @@ class TestDMis01MissingNumbersAscending:
     def test_d_mis_01_missing_numbers_ascending_pair(self) -> None:
         """D-MIS-01 — returns [small, large] with small < large."""
         # Given
-        # finder = MissingNumberFinder()
-        # grid = grid_g1_two_blanks()
+        finder = MissingNumberFinder()
+        grid = grid_g1_two_blanks()
 
         # When
-        # missing = finder.find_missing(grid)
+        missing = finder.find_missing(grid)
 
         # Then
-        pytest.fail("RED: D-MIS-01 — MissingNumberFinder [small, large] ascending")
+        assert missing == [1, 7]
+        assert missing[0] < missing[1]
