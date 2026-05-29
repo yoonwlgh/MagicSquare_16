@@ -27,11 +27,26 @@ class UserCliBoundary:
         Returns:
             dict[str, Any]: Serialized user data for boundary response.
         """
+        user_id, name, email = self._parse_create_user_payload(payload)
         user = self._user_control.create_user(
-            user_id=int(payload["user_id"]),
-            name=str(payload["name"]),
-            email=str(payload["email"]),
+            user_id=user_id,
+            name=name,
+            email=email,
         )
+        return self._serialize_user(user)
+
+    def _parse_create_user_payload(
+        self, payload: dict[str, Any]
+    ) -> tuple[int, str, str]:
+        """Extract create-user fields from an external request payload."""
+        return (
+            int(payload["user_id"]),
+            str(payload["name"]),
+            str(payload["email"]),
+        )
+
+    def _serialize_user(self, user: object) -> dict[str, Any]:
+        """Convert a domain user to a boundary response payload."""
         return {
             "user_id": user.user_id,
             "name": user.name,
