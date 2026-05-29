@@ -6,11 +6,11 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from boundary.magic_square.contracts import (
+from control.application_contracts import (
     CONTROL_LAYER,
     ERR_SOLVER_NO_SOLUTION_CODE,
     ERR_SOLVER_NO_SOLUTION_MESSAGE,
-    ErrorResponse,
+    ApplicationError,
 )
 from control.magic_square_resolver import MagicSquareDomainResolver
 from entity.services.exceptions import SolverNoSolutionError
@@ -54,7 +54,7 @@ class TestMagicSquareDomainResolverNoSolution:
         result = resolver.resolve(grid)
 
         # Then
-        assert isinstance(result, ErrorResponse)
+        assert isinstance(result, ApplicationError)
         assert result.code == ERR_SOLVER_NO_SOLUTION_CODE
         assert result.message == ERR_SOLVER_NO_SOLUTION_MESSAGE
         assert result.layer == CONTROL_LAYER

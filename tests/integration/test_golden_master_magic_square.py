@@ -6,6 +6,7 @@ import pytest
 
 from boundary.magic_square.boundary_validator import BoundaryValidator
 from boundary.magic_square.contracts import ErrorResponse
+from control.application_contracts import ApplicationError
 from control.magic_square_control import MagicSquareControl
 from control.magic_square_resolver import MagicSquareDomainResolver
 from tests.golden_master.approval import (
@@ -81,7 +82,7 @@ class TestGoldenMasterMagicSquare:
 
         # Then
         if scenario.strategy == SolveStrategy.ERROR:
-            assert isinstance(result, ErrorResponse)
+            assert isinstance(result, (ErrorResponse, ApplicationError))
             assert_error_contract(result, scenario)
         else:
             assert isinstance(result, list)

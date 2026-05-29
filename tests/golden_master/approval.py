@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 from boundary.magic_square.contracts import ErrorResponse
+from control.application_contracts import ApplicationError
 from control.magic_square_control import MagicSquareControl
 from tests.golden_master.scenarios import GOLDEN_SCENARIOS, GoldenScenario
 
@@ -51,7 +52,7 @@ def capture_scenario_section(
     """Run one scenario through Control and serialize its Golden Master section."""
     grid = scenario.grid_factory()
     result = control.solve(grid)
-    if isinstance(result, ErrorResponse):
+    if isinstance(result, (ErrorResponse, ApplicationError)):
         return serialize_error_section(scenario.section_id, grid, result.code)
     return serialize_success_section(scenario.section_id, grid, result)
 

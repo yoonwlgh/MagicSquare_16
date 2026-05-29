@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from boundary.magic_square.boundary_validator import BoundaryValidator
 from boundary.magic_square.contracts import ErrorResponse
+from control.application_contracts import ApplicationError
 from boundary.result_formatter import ResultFormatter
 from control.magic_square_control import MagicSquareControl
 from control.magic_square_resolver import MagicSquareDomainResolver
@@ -33,7 +34,7 @@ class MagicSquareScreenPresenter:
 
     def solve(
         self, grid: list[list[int]] | None
-    ) -> ErrorResponse | list[int]:
+    ) -> ApplicationError | ErrorResponse | list[int]:
         """Validate at boundary then run domain solver when valid."""
         return self._control.solve(grid)
 
@@ -42,7 +43,7 @@ class MagicSquareScreenPresenter:
         return self._formatter.to_int6(payload)
 
     @staticmethod
-    def format_error(response: ErrorResponse) -> str:
+    def format_error(response: ErrorResponse | ApplicationError) -> str:
         """Render structured failure for the UI."""
         return f"{response.code}: {response.message}"
 

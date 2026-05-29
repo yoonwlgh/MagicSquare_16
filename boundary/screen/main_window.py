@@ -23,6 +23,7 @@ from boundary.magic_square.contracts import (
     MAX_CELL_VALUE,
     ErrorResponse,
 )
+from control.application_contracts import ApplicationError
 from boundary.screen.presenter import MagicSquareScreenPresenter
 from boundary.screen.sample_grids import (
     grid_invalid_blank_count_sample,
@@ -121,7 +122,7 @@ class MagicSquareMainWindow(QMainWindow):
     def _on_validate(self) -> None:
         """Handle Validate button — boundary checks only."""
         result = self._presenter.validate(self._read_grid())
-        if isinstance(result, ErrorResponse):
+        if isinstance(result, (ErrorResponse, ApplicationError)):
             self._show_error(self._presenter.format_error(result))
             return
         self._show_success("Validation passed (FR-01). Grid is ready for solve.")
@@ -129,7 +130,7 @@ class MagicSquareMainWindow(QMainWindow):
     def _on_solve(self) -> None:
         """Handle Solve button — validate then domain solver."""
         outcome = self._presenter.solve(self._read_grid())
-        if isinstance(outcome, ErrorResponse):
+        if isinstance(outcome, (ErrorResponse, ApplicationError)):
             self._show_error(self._presenter.format_error(outcome))
             return
         formatted = self._presenter.format_success(outcome)

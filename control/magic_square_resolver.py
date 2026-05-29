@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from boundary.magic_square.contracts import (
+from control.application_contracts import (
     CONTROL_LAYER,
     ERR_SOLVER_NO_SOLUTION_CODE,
     ERR_SOLVER_NO_SOLUTION_MESSAGE,
-    ErrorResponse,
+    ApplicationError,
 )
 from entity.services.exceptions import SolverNoSolutionError
 from entity.services.solver import Solver
@@ -19,7 +19,7 @@ class MagicSquareDomainResolver:
         """Initialize with optional injected solver for testing."""
         self._solver = solver or Solver()
 
-    def resolve(self, grid: list[list[int]]) -> list[int] | ErrorResponse:
+    def resolve(self, grid: list[list[int]]) -> list[int] | ApplicationError:
         """Attempt small-first then reverse solve on a validated grid.
 
         Args:
@@ -31,7 +31,7 @@ class MagicSquareDomainResolver:
         try:
             return self._solver.solve(grid)
         except SolverNoSolutionError:
-            return ErrorResponse(
+            return ApplicationError(
                 code=ERR_SOLVER_NO_SOLUTION_CODE,
                 message=ERR_SOLVER_NO_SOLUTION_MESSAGE,
                 layer=CONTROL_LAYER,

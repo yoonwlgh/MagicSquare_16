@@ -323,7 +323,7 @@ P0 테스트 보강 → P0 ECB 분리 → P1 SRP 분리 → P2 계약·중복·�
 | 상태 | ID | 대상 | 문제 | 조치 |
 |------|-----|------|------|------|
 | [x] | B-1 | `control/magic_square_control.py` | `BoundaryValidator`, `ErrorResponse` 직접 import | `control/ports.py` — `ValidationPort`, Application DTO |
-| [ ] | B-2 | `control/magic_square_resolver.py` | `boundary.magic_square.contracts` import | Control 소유 DTO + Boundary adapter |
+| [x] | B-2 | `control/magic_square_resolver.py` | `boundary.magic_square.contracts` import | Control 소유 DTO + Boundary adapter |
 | [ ] | B-3 | `boundary/magic_square/contracts.py` | DTO·에러 코드가 Boundary에만 존재 | Port 계약 이동, Boundary는 adapter |
 
 ---
