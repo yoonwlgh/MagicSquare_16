@@ -5,9 +5,18 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 from boundary.magic_square.boundary_validator import BoundaryValidator
-from boundary.magic_square.contracts import ERR_INVALID_BLANK_COUNT_CODE, ErrorResponse
+from boundary.magic_square.contracts import (
+    ERR_DUPLICATE_VALUE_CODE,
+    ERR_INVALID_BLANK_COUNT_CODE,
+    ERR_OUT_OF_RANGE_CODE,
+    ErrorResponse,
+)
 from control.magic_square_control import MagicSquareControl
-from tests.conftest import grid_three_blanks
+from tests.conftest import (
+    grid_duplicate_seven_with_two_blanks,
+    grid_three_blanks,
+    grid_value_17_with_two_blanks,
+)
 
 AC_DOCSTRING = (
     "U-FLOW-02, BR-05, EP-01 — blank-count / range / duplicate failure "
@@ -35,4 +44,48 @@ class TestUFlow02BlankCountBlocksDomain:
         # Then
         assert isinstance(result, ErrorResponse)
         assert result.code == ERR_INVALID_BLANK_COUNT_CODE
+        assert resolver.resolve.call_count == 0
+
+
+class TestUFlow02OutOfRangeBlocksDomain:
+    """U-FLOW-02 — FR-01 range failure skips Domain resolve/spy."""
+
+    def test_u_flow_02_out_of_range_error_domain_pipeline_zero_calls(
+        self,
+    ) -> None:
+        """U-FLOW-02 — cell value 17: resolver.call_count == 0."""
+        # Given
+        validator = BoundaryValidator()
+        resolver = MagicMock()
+        control = MagicSquareControl(boundary_validator=validator, resolver=resolver)
+        grid = grid_value_17_with_two_blanks()
+
+        # When
+        result = control.solve(grid)
+
+        # Then
+        assert isinstance(result, ErrorResponse)
+        assert result.code == ERR_OUT_OF_RANGE_CODE
+        assert resolver.resolve.call_count == 0
+
+
+class TestUFlow02DuplicateBlocksDomain:
+    """U-FLOW-02 — FR-01 duplicate failure skips Domain resolve/spy."""
+
+    def test_u_flow_02_duplicate_value_error_domain_pipeline_zero_calls(
+        self,
+    ) -> None:
+        """U-FLOW-02 — duplicate non-zero: resolver.call_count == 0."""
+        # Given
+        validator = BoundaryValidator()
+        resolver = MagicMock()
+        control = MagicSquareControl(boundary_validator=validator, resolver=resolver)
+        grid = grid_duplicate_seven_with_two_blanks()
+
+        # When
+        result = control.solve(grid)
+
+        # Then
+        assert isinstance(result, ErrorResponse)
+        assert result.code == ERR_DUPLICATE_VALUE_CODE
         assert resolver.resolve.call_count == 0

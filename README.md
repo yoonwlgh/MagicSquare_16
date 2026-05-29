@@ -310,7 +310,7 @@ P0 테스트 보강 → P0 ECB 분리 → P1 SRP 분리 → P2 계약·중복·�
 | [x] | A-1 | `tests/control/test_magic_square_control.py` (신규) | `MagicSquareControl.solve()` — validate 실패 → resolver 0회; 통과 → 1회 |
 | [x] | A-2 | `tests/control/test_magic_square_resolver.py` (신규) | `SolverNoSolutionError` → `ERR_SOLVER_NO_SOLUTION` / Control layer |
 | [x] | A-3 | `test_ac_fr01_01_invalid_size.py` | TC-BND-006 (5×5), DET-001 (결정론×2), IMM-001 (grid 불변) |
-| [ ] | A-4 | `test_u_flow_domain_isolation.py` | range·duplicate 실패 시 resolver spy 0회 |
+| [x] | A-4 | `test_u_flow_domain_isolation.py` | range·duplicate 실패 시 resolver spy 0회 |
 | [ ] | A-5 | `test_u_out_result_format.py` | `to_int6()` negative — non-list, len≠6, 좌표 범위 → `ValueError` |
 | [ ] | A-6 | `test_screen_presenter.py` (선택) | validate/solve 위임, `format_*` 문자열 |
 
