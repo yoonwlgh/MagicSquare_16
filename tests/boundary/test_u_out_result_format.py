@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from boundary.result_formatter import ResultFormatter
 from entity.services.solver import Solver
 from tests.conftest import grid_g3_reverse_success
@@ -63,3 +65,34 @@ class TestUOut03TupleOrder:
 
         # Then
         assert result == REVERSE_SUCCESS_INT6
+
+
+class TestUOut04FormatterNegativePaths:
+    """A-5 / U-OUT — invalid internal payloads raise ValueError."""
+
+    def test_u_out_04_non_list_internal_raises_value_error(self) -> None:
+        """A-5 — non-list internal payload rejected."""
+        # Given
+        formatter = ResultFormatter()
+
+        # When / Then
+        with pytest.raises(ValueError, match="must be a list"):
+            formatter.to_int6("not-a-list")
+
+    def test_u_out_04_wrong_length_raises_value_error(self) -> None:
+        """A-5 — payload length != 6 rejected."""
+        # Given
+        formatter = ResultFormatter()
+
+        # When / Then
+        with pytest.raises(ValueError, match="length 6"):
+            formatter.to_int6([1, 2, 3])
+
+    def test_u_out_04_out_of_bounds_coordinate_raises_value_error(self) -> None:
+        """A-5 — coordinate outside 1..4 rejected."""
+        # Given
+        formatter = ResultFormatter()
+
+        # When / Then
+        with pytest.raises(ValueError, match="1-indexed"):
+            formatter.to_int6([0, 1, 2, 3, 4, 5])
