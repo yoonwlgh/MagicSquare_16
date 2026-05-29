@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from entity.services.constants import MAGIC_CONSTANT
+from entity.services.constants import GRID_SIZE, MAGIC_CONSTANT
 
 
 class MagicSquareValidator:
@@ -16,12 +16,22 @@ class MagicSquareValidator:
 
         Returns:
             True if the grid satisfies magic-square rules.
-
-        Raises:
-            NotImplementedError: RED stub — implementation pending GREEN phase.
         """
-        _ = grid
-        _ = MAGIC_CONSTANT
-        raise NotImplementedError(
-            "RED: MagicSquareValidator.is_valid not implemented"
-        )
+        for row in range(GRID_SIZE):
+            if sum(grid[row][col] for col in range(GRID_SIZE)) != MAGIC_CONSTANT:
+                return False
+
+        for col in range(GRID_SIZE):
+            if sum(grid[row][col] for row in range(GRID_SIZE)) != MAGIC_CONSTANT:
+                return False
+
+        if sum(grid[index][index] for index in range(GRID_SIZE)) != MAGIC_CONSTANT:
+            return False
+
+        if (
+            sum(grid[index][GRID_SIZE - 1 - index] for index in range(GRID_SIZE))
+            != MAGIC_CONSTANT
+        ):
+            return False
+
+        return True

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from entity.services.constants import BLANK_CELL_VALUE, GRID_SIZE
+
 
 class BlankFinder:
     """Finds exactly two blank (0) cells in row-major order."""
@@ -14,9 +16,10 @@ class BlankFinder:
 
         Returns:
             List of two zero-index (row, col) pairs in row-major order.
-
-        Raises:
-            NotImplementedError: RED stub — implementation pending GREEN phase.
         """
-        _ = grid
-        raise NotImplementedError("RED: BlankFinder.find_blanks not implemented")
+        blanks: list[tuple[int, int]] = []
+        for row in range(GRID_SIZE):
+            for col in range(GRID_SIZE):
+                if grid[row][col] == BLANK_CELL_VALUE:
+                    blanks.append((row, col))
+        return blanks
