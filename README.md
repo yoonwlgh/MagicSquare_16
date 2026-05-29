@@ -262,6 +262,9 @@ python -m pytest tests/ -v
 | [Report/05 — TODO Web 스택](./Report/05TodoWeb-Stack-Recommendation-Report.md) | React+TS+Vite 권장 (참고용) | 2026-05-28 |
 | [Report/06 — Journey/Story/Scenario](./Report/06MagicSquare-UserJourney-Story-Scenario-Report.md) | Epic~Level 4 시나리오 | 2026-05-28 |
 | [Report/07 — PRD 작성·검토](./Report/07MagicSquare-PRD-Development-and-Review-Report.md) | PRD 산출 + 7기준 검토 | 2026-05-29 |
+| [Report/08 — TDD 시작·To-Do](./Report/08MagicSquare-TDD-Start-ToDo-README-Report.md) | 샘플 AC-FR01-01 선정·추적 보드·README RED To-Do | 2026-05-29 |
+| [Report/09 — AC-FR01-01 RED·HTML](./Report/09MagicSquare-AC-FR01-01-RED-Test-HTML-Report.md) | RED 25건·venv·HTML·[defect_list.md](./defect_list.md) | 2026-05-29 |
+| [Report/10 — Dual-Track RED Skeleton](./Report/10MagicSquare-DualTrack-RED-Skeleton-Report.md) | U-IN/U-OUT/U-FLOW·D-* 스켈레톤 21건 | 2026-05-29 |
 | [docs/PRD_MagicSquare.md](./docs/PRD_MagicSquare.md) | 구현 전 PRD 본문 (23개 섹션) | 2026-05-29 |
 | [Report/README.md](./Report/README.md) | Report 폴더 목차 | — |
 

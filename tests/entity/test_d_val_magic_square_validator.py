@@ -1,0 +1,111 @@
+"""Track B RED skeleton: D-VAL-01~06 MagicSquareValidator line sums (FR-04)."""
+
+from __future__ import annotations
+
+import pytest
+
+from entity.services.magic_square_validator import MagicSquareValidator
+
+AC_DOCSTRING = "D-VAL, FR-04, BR-09/10/11 — MAGIC_CONSTANT=34 line validation."
+
+
+class TestDVal01RowSums:
+    """D-VAL-01 — each row sums to 34."""
+
+    # D-VAL-01
+    def test_d_val_01_all_row_sums_equal_magic_constant(self) -> None:
+        """D-VAL-01 — four row sums == 34."""
+        # Given
+        # validator = MagicSquareValidator()
+        # grid = ...  # filled 4x4
+
+        # When
+        # valid = validator.is_valid(grid)
+
+        # Then
+        pytest.fail("RED: D-VAL-01 — all row sums equal MAGIC_CONSTANT 34")
+
+
+class TestDVal02ColumnSums:
+    """D-VAL-02 — each column sums to 34."""
+
+    # D-VAL-02
+    def test_d_val_02_all_column_sums_equal_magic_constant(self) -> None:
+        """D-VAL-02 — four column sums == 34."""
+        # Given
+        # validator = MagicSquareValidator()
+        # grid = ...
+
+        # When
+        # valid = validator.is_valid(grid)
+
+        # Then
+        pytest.fail("RED: D-VAL-02 — all column sums equal MAGIC_CONSTANT 34")
+
+
+class TestDVal03MainDiagonal:
+    """D-VAL-03 — main diagonal sum is 34."""
+
+    # D-VAL-03
+    def test_d_val_03_main_diagonal_sum_equals_magic_constant(self) -> None:
+        """D-VAL-03 — primary diagonal sum == 34."""
+        # Given
+        # validator = MagicSquareValidator()
+        # grid = ...
+
+        # When
+        # valid = validator.is_valid(grid)
+
+        # Then
+        pytest.fail("RED: D-VAL-03 — main diagonal sum equals 34")
+
+
+class TestDVal04AntiDiagonal:
+    """D-VAL-04 — anti-diagonal sum is 34."""
+
+    # D-VAL-04
+    def test_d_val_04_anti_diagonal_sum_equals_magic_constant(self) -> None:
+        """D-VAL-04 — secondary diagonal sum == 34."""
+        # Given
+        # validator = MagicSquareValidator()
+        # grid = ...
+
+        # When
+        # valid = validator.is_valid(grid)
+
+        # Then
+        pytest.fail("RED: D-VAL-04 — anti-diagonal sum equals 34")
+
+
+class TestDVal05FullyValidGrid:
+    """D-VAL-05 — complete magic square returns true."""
+
+    # D-VAL-05
+    def test_d_val_05_complete_magic_square_is_valid(self) -> None:
+        """D-VAL-05 — all lines + uniqueness → is_valid True (AC-FR04-01)."""
+        # Given
+        # validator = MagicSquareValidator()
+        # grid = ...  # known valid 4x4 magic square
+
+        # When
+        # valid = validator.is_valid(grid)
+
+        # Then
+        pytest.fail("RED: D-VAL-05 — fully valid 4x4 magic square → True")
+
+
+class TestDVal06InvalidLineSum:
+    """D-VAL-06 — one line not 34 returns false."""
+
+    # D-VAL-06
+    def test_d_val_06_one_row_wrong_sum_is_invalid(self) -> None:
+        """D-VAL-06 — single row sum != 34 → False (AC-FR04-02)."""
+        # Given
+        # validator = MagicSquareValidator()
+        # grid = ...  # one row sum != 34
+
+        # When
+        # valid = validator.is_valid(grid)
+
+        # Then
+        pytest.fail("RED: D-VAL-06 — one line sum != 34 → is_valid False")
