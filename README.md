@@ -280,7 +280,7 @@ ECB: UI는 `boundary/screen/` → `control/` → `entity/` 순으로 호출합�
 
 > **전제:** `.cursorrules` REFACTOR phase — 외부 동작·계약·예외 의미 불변, 커버리지 80% 유지, GREEN 전체 통과 후 착수.  
 > **범위:** `control/`, `boundary/` (루트 ECB)  
-> **현재 baseline:** `80 passed` · `pytest -m golden_master` → 18 passed  
+> **현재 baseline:** `93 passed` · `pytest -m golden_master` → 18 passed · `--cov-fail-under=85` (boundary FR-01/control)  
 > **상세 보고서:** [Report/15 — REFACTOR 계획](./Report/15MagicSquare-REFACTOR-Plan-Report.md)  
 > **표기:** `[ ]` 미완 · `[x]` 완료 · **P0→P3** = 우선순위
 
@@ -366,7 +366,7 @@ P0 테스트 보강 → P0 ECB 분리 → P1 SRP 분리 → P2 계약·중복·�
 
 | 상태 | ID | 대상 | 문제 | 조치 | 우선순위 |
 |------|-----|------|------|------|----------|
-| [ ] | E-1 | `test_u_out_result_format.py` | `Solver()` 직접 호출 — Entity 우회 | Control + `ResultFormatter` E2E | P2 |
+| [x] | E-1 | `test_u_out_result_format.py` | `Solver()` 직접 호출 — Entity 우회 | Control + `ResultFormatter` E2E | P2 |
 | [ ] | E-2 | `pytest.ini` / CI | cov threshold 미적용 | boundary/control 85%+, 전체 90%+ | P2 |
 | [ ] | E-3 | `defect_list.md` | 80 passed와 불일치 | CLOSE/OPEN 상태 갱신 | P3 |
 
@@ -376,15 +376,15 @@ P0 테스트 보강 → P0 ECB 분리 → P1 SRP 분리 → P2 계약·중복·�
 
 ```text
 Phase 0 (P0)
-  [ ] A-1 ~ A-5 GREEN
-  [ ] B-1 ~ B-3 REFACTOR
+  [x] A-1 ~ A-5 GREEN
+  [x] B-1 ~ B-3 REFACTOR
 
 Phase 1 (P1)
-  [ ] C-1a ~ C-1c REFACTOR
+  [x] C-1a ~ C-1c REFACTOR
 
 Phase 2 (P2)
-  [ ] D-1 ~ D-4
-  [ ] C-2a, C-2b
+  [x] D-1 ~ D-4
+  [x] C-2a, C-2b
   [ ] E-1, E-2
   [ ] (선택) A-6
 
