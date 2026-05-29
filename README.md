@@ -269,11 +269,86 @@ ECB: UI는 `boundary/screen/` → `control/` → `entity/` 순으로 호출합�
 
 ## 다음 단계
 
-1. Track A **U-IN-04~08** GREEN (blank count / range / duplicate — AC-FR01-02~04)
-2. Track A **U-FLOW-02** GREEN (blank-count 실패 시 Domain 미호출)
-3. Track B **D-LOC-01 → D-MIS-01 → D-VAL-01~06 → D-SOL-01~04** GREEN
-4. Track A **U-OUT-01~03** GREEN (Solver 연동 후 `int[6]` 포맷)
-5. 커버리지 게이트: Domain 95%+, Boundary 85%+, 전체 90%+
+1. **REFACTOR 선행:** Control unit test + TC-BND-006/DET/IMM + U-FLOW 확장 (RED→GREEN)
+2. **P0 REFACTOR:** Control↔Boundary Port/Adapter 분리
+3. **P1 REFACTOR:** resolver/formatter/presenter SRP 분리
+4. 커버리지 게이트: Domain 95%+, Boundary 85%+, 전체 90%+
+5. 상세: [REFACTOR 계획](#refactor-계획) · [Report/15](./Report/15MagicSquare-REFACTOR-Plan-Report.md)
+
+---
+
+## REFACTOR 계획
+
+> **전제:** `.cursorrules` REFACTOR phase — 외부 동작·계약·예외 의미 불변, 커버리지 80% 유지, GREEN 전체 통과 후 착수.  
+> **범위:** `control/`, `boundary/` (루트 ECB)  
+> **현재 baseline:** `80 passed` · `pytest -m golden_master` → 18 passed  
+> **상세 보고서:** [Report/15 — REFACTOR 계획](./Report/15MagicSquare-REFACTOR-Plan-Report.md)
+
+### 리팩토링 대상 목록 (우선순위 순)
+
+| 순번 | 대상 파일 | 문제 | 적용 기법 | 우선순위 |
+|------|-----------|------|-----------|----------|
+| 1 | `control/magic_square_control.py`<br>`control/magic_square_resolver.py`<br>`boundary/magic_square/contracts.py` | ECB 위반: Control이 Boundary 구현·DTO에 직접 의존 | Port/Adapter — `control/ports.py`에 Protocol·DTO, Boundary adapter | **P0** |
+| 2 | `tests/` (신규) | Control layer 전용 unit test 없음 | RED→GREEN 테스트 선행 후 순번 1 | **P0 (선행)** |
+| 3 | `test_u_flow_domain_isolation.py`<br>`boundary_validator.py` | U-FLOW blank만 검증; TC-BND-006/DET/IMM 미작성 | 테스트 보강 → validator 메서드 추출 | **P0** |
+| 4 | `control/magic_square_resolver.py:22` | Solver 호출 + ErrorResponse 조립 이중 역할 | Extract Class — `SolverErrorMapper` | **P1** |
+| 5 | `boundary/result_formatter.py:11` | 계약 검증 + int[6] 정규화 이중 역할 | Validator / Formatter 분리 | **P1** |
+| 6 | `boundary/screen/presenter.py:12` | use-case 위임 + 출력 포맷 복수 책임 | Extract Class — `ViewFormatter` | **P1** |
+| 7 | `boundary/screen/main_window.py:37,47` | Presenter 주입 + UI 구성 / 샘플 데이터 wiring 혼재 | Composition Root·LayoutBuilder 분리 | **P2** |
+| 8 | `boundary/cli/user_cli_boundary.py:21` | 파싱·Control·직렬화 혼재 | Extract Method | **P2** |
+| 9 | `input_validator.py` / `boundary_validator.py` | Facade 중복 (OPEN-04) | 단일 진입점 통일 | **P2** |
+| 10 | `entity/constants.py` / `contracts.py` | 상수 이중 정의 | entity SSOT → boundary re-export | **P2** |
+| 11 | `contracts.py` | OPEN-01: `INVALID_SIZE` vs `ERR_INVALID_SHAPE` | Rename + GM baseline 재approve | **P2** |
+| 12 | `test_u_out_result_format.py` | Entity 직접 호출 우회 | Control + Formatter E2E 정렬 | **P2** |
+| 13 | `defect_list.md` | 80 passed와 문서 불일치 | 문서 동기화 | **P3** |
+
+### 테스트 선행 필요 항목
+
+리팩토링 **전** RED→GREEN:
+
+| 대상 | 테스트 파일 | 검증 |
+|------|-------------|------|
+| `MagicSquareControl.solve()` | `tests/control/test_magic_square_control.py` (신규) | validate 실패 → resolver 0회; 통과 → resolver 1회 |
+| `MagicSquareDomainResolver.resolve()` | `tests/control/test_magic_square_resolver.py` (신규) | `SolverNoSolutionError` → `ERR_SOLVER_NO_SOLUTION` / Control layer |
+| `BoundaryValidator.validate()` | `test_ac_fr01_01_invalid_size.py` | TC-BND-006 (5×5), DET-001, IMM-001 |
+| U-FLOW range/duplicate | `test_u_flow_domain_isolation.py` | resolver spy 0회 |
+| `ResultFormatter.to_int6()` | `test_u_out_result_format.py` | negative: non-list, len≠6, 좌표 범위 → ValueError |
+| Presenter (선택) | `test_screen_presenter.py` (신규) | validate/solve 위임, format_* 문자열 |
+
+> `tests/` 내 `pytest.fail` RED 스켈레톤: **0건** (Dual-Track GREEN 완료). 위는 **미작성** 테스트.
+
+### 리팩토링 후 검증
+
+**회귀 테스트**
+
+```powershell
+python -m pytest tests/ -v
+pytest -m golden_master -v
+python -m pytest tests/control/ tests/boundary/ tests/integration/ -v
+python -m pytest tests/ --cov=boundary --cov=control --cov=entity --cov-report=term-missing
+```
+
+**외부 동작 불변**
+
+- Golden Master: `tests/golden_master_expected.txt` diff 없음
+- GM-TC-01~05: int[6], row-major, 1-index, Error code/layer
+- AC-FR-01-01 25건: 에러 code/message/layer 불변
+- Domain 격리: FR-01 실패 시 `resolve` 0회
+
+**Smoke**
+
+```powershell
+python -c "from boundary.screen.presenter import MagicSquareScreenPresenter; from boundary.screen.sample_grids import grid_reverse_success_sample; print(MagicSquareScreenPresenter().solve(grid_reverse_success_sample()))"
+# [3, 3, 7, 4, 4, 1]
+
+python scripts/generate_golden_master.py
+git diff tests/golden_master_expected.txt
+# diff 없음
+
+python -m boundary.screen
+```
+
+**권장 순서:** 테스트 선행 → P0 Port/Adapter → P1 SRP 분리 → P2 정리 → 전체 pytest + GM + cov
 
 ---
 
@@ -366,6 +441,7 @@ ECB: UI는 `boundary/screen/` → `control/` → `entity/` 순으로 호출합�
 | [Report/11 — AC-FR01-01 GREEN](./Report/11MagicSquare-AC-FR01-01-GREEN-Report.md) | I-1 GREEN 25건·체크리스트·21 failed 분석 | 2026-05-29 |
 | [Report/12 — Dual-Track GREEN + PyQt](./Report/12MagicSquare-DualTrack-GREEN-PyQt-Report.md) | 21건 GREEN·62 passed·PyQt GUI | 2026-05-29 |
 | [Report/14 — Golden Master 회귀](./Report/14MagicSquare-GoldenMaster-Regression-Report.md) | GM-1~3·approve·80 passed·GM-TC-01~05 | 2026-05-29 |
+| [Report/15 — REFACTOR 계획](./Report/15MagicSquare-REFACTOR-Plan-Report.md) | 코드 리뷰·SRP·테스트 선행·REFACTOR 로드맵 | 2026-05-29 |
 | [docs/PRD_MagicSquare.md](./docs/PRD_MagicSquare.md) | 구현 전 PRD 본문 (23개 섹션) | 2026-05-29 |
 | [docs/README.md](./docs/README.md) | docs 인덱스 · RED To-Do · Golden Master (GM-1~3) | 2026-05-29 |
 | [docs/golden_master_approval_design.md](./docs/golden_master_approval_design.md) | Golden Master approve 패턴 설계 | 2026-05-29 |
