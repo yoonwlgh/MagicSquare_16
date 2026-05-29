@@ -167,6 +167,29 @@ MagicSquare_JH/
 python -m pytest tests/ -v
 ```
 
+### HTML 테스트 리포트 (수동 갱신)
+
+`pytest`만 실행하면 **HTML 리포트는 자동으로 갱신되지 않습니다.**  
+마지막 생성본: `Report/pytest_report.html` (`.gitignore` 대상 — 로컬 파일만 갱신).
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+.\scripts\generate_test_report.ps1
+```
+
+또는:
+
+```powershell
+python -m pytest tests/ -v `
+  --html=Report/pytest_report.html `
+  --self-contained-html `
+  --cov=boundary --cov=control --cov=entity `
+  --cov-report=html:htmlcov `
+  --cov-report=term-missing
+```
+
+브라우저에서 예전 결과가 보이면 **파일을 닫았다가 다시 열거나** 새로고침하세요.
+
 현재 ECB 검증용 User 슬라이스: **16 passed**
 
 ### Cursor Rule (.cursor/rules/)
