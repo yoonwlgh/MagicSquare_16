@@ -1,6 +1,15 @@
 """Boundary contracts for magic square validation (FR-01)."""
 
-from pydantic import BaseModel, ConfigDict
+from control.application_contracts import (
+    ApplicationError,
+    BOUNDARY_LAYER,
+    CONTROL_LAYER,
+    ERR_SOLVER_NO_SOLUTION_CODE,
+    ERR_SOLVER_NO_SOLUTION_MESSAGE,
+)
+
+# Backward-compatible alias; canonical DTO lives in control.application_contracts.
+ErrorResponse = ApplicationError
 
 # PRD §8.1 / test_plan sample contract (OPEN-01: map to ERR_INVALID_SHAPE later).
 GRID_SIZE = 4
@@ -23,12 +32,6 @@ ERR_OUT_OF_RANGE_MESSAGE = "Cell values must be 0 or 1..16."
 ERR_DUPLICATE_VALUE_CODE = "ERR_DUPLICATE_VALUE"
 ERR_DUPLICATE_VALUE_MESSAGE = "Non-zero values must be unique."
 
-ERR_SOLVER_NO_SOLUTION_CODE = "ERR_SOLVER_NO_SOLUTION"
-ERR_SOLVER_NO_SOLUTION_MESSAGE = "No valid magic square combination found."
-
-BOUNDARY_LAYER = "Boundary"
-CONTROL_LAYER = "Control"
-
 FORBIDDEN_OUT_OF_SCOPE_ERROR_CODES = frozenset(
     {
         "ERR_INVALID_BLANK_COUNT",
@@ -38,13 +41,3 @@ FORBIDDEN_OUT_OF_SCOPE_ERROR_CODES = frozenset(
         "ERR_INVALID_SHAPE",
     }
 )
-
-
-class ErrorResponse(BaseModel):
-    """Structured failure response from Boundary validation."""
-
-    model_config = ConfigDict(frozen=True)
-
-    code: str
-    message: str
-    layer: str = BOUNDARY_LAYER

@@ -7,7 +7,6 @@ import inspect
 from unittest.mock import MagicMock
 
 import pytest
-from pydantic import BaseModel
 
 from boundary.magic_square.boundary_validator import BoundaryValidator
 from boundary.magic_square.contracts import (
@@ -106,8 +105,7 @@ class TestAcFr0101NormalFailureReturn:
         result = boundary_validator.validate(grid)
 
         # Then
-        assert isinstance(result, BaseModel)
-        assert type(result).__name__ == "ErrorResponse"
+        assert isinstance(result, ErrorResponse)
 
 
 class TestAcFr0101BoundaryValues:
