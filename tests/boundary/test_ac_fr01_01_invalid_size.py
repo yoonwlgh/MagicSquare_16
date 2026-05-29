@@ -467,3 +467,67 @@ class TestAcFr0101ScopeRestriction:
                 assert fragment not in lowered, (
                     f"AC-FR-01-01 scope violation: {test_name} suggests FR-02~05"
                 )
+
+
+def grid_5x5() -> list[list[int]]:
+    """Five rows and five columns — shape violation (TC-BND-006)."""
+    return [[1, 2, 3, 4, 5] for _ in range(5)]
+
+
+class TestAcFr0101ExtendedBoundaryContract:
+    """TC-BND-006, TC-BND-DET-001, TC-BND-IMM-001 — shape edge and invariants."""
+
+    # TC-BND-006
+    def test_tc_bnd_006_five_by_five_matrix_returns_invalid_size(
+        self,
+        boundary_validator: BoundaryValidator,
+    ) -> None:
+        """TC-BND-006 — 5×5 matrix rejects INVALID_SIZE before Domain."""
+        # Given
+        grid = grid_5x5()
+
+        # When
+        result = boundary_validator.validate(grid)
+
+        # Then
+        assert isinstance(result, ErrorResponse)
+        assert result.code == INVALID_SIZE_CODE
+        assert result.message == INVALID_SIZE_MESSAGE
+        assert result.layer == BOUNDARY_LAYER
+
+    # TC-BND-DET-001
+    def test_tc_bnd_det_001_validate_twice_returns_identical_error(
+        self,
+        boundary_validator: BoundaryValidator,
+    ) -> None:
+        """TC-BND-DET-001 — same invalid grid validated twice yields identical response."""
+        # Given
+        grid = None
+
+        # When
+        first = boundary_validator.validate(grid)
+        second = boundary_validator.validate(grid)
+
+        # Then
+        assert first is not None and second is not None
+        assert first.code == second.code
+        assert first.message == second.message
+        assert first.layer == second.layer
+
+    # TC-BND-IMM-001
+    def test_tc_bnd_imm_001_validate_does_not_mutate_input_grid(
+        self,
+        boundary_validator: BoundaryValidator,
+    ) -> None:
+        """TC-BND-IMM-001 — validate leaves mutable grid snapshot unchanged."""
+        # Given
+        import copy
+
+        grid = grid_3x4()
+        before = copy.deepcopy(grid)
+
+        # When
+        boundary_validator.validate(grid)
+
+        # Then
+        assert grid == before

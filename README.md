@@ -309,7 +309,7 @@ P0 테스트 보강 → P0 ECB 분리 → P1 SRP 분리 → P2 계약·중복·�
 |------|-----|------|-------------|
 | [x] | A-1 | `tests/control/test_magic_square_control.py` (신규) | `MagicSquareControl.solve()` — validate 실패 → resolver 0회; 통과 → 1회 |
 | [x] | A-2 | `tests/control/test_magic_square_resolver.py` (신규) | `SolverNoSolutionError` → `ERR_SOLVER_NO_SOLUTION` / Control layer |
-| [ ] | A-3 | `test_ac_fr01_01_invalid_size.py` | TC-BND-006 (5×5), DET-001 (결정론×2), IMM-001 (grid 불변) |
+| [x] | A-3 | `test_ac_fr01_01_invalid_size.py` | TC-BND-006 (5×5), DET-001 (결정론×2), IMM-001 (grid 불변) |
 | [ ] | A-4 | `test_u_flow_domain_isolation.py` | range·duplicate 실패 시 resolver spy 0회 |
 | [ ] | A-5 | `test_u_out_result_format.py` | `to_int6()` negative — non-list, len≠6, 좌표 범위 → `ValueError` |
 | [ ] | A-6 | `test_screen_presenter.py` (선택) | validate/solve 위임, `format_*` 문자열 |
@@ -444,11 +444,11 @@ python -m boundary.screen
 | [x] GREEN | TC-B-01~03 | 형태 실패 시 Domain 격리 (`TestAcFr0101DomainIsolation`) |
 | [x] GREEN | TC-B-04 | AC-FR-01-02~05 오류 코드 미반환 확인 (`TestAcFr0101ScopeRestriction`) |
 | [x] GREEN | — | 메시지 동일성·layer=Boundary (동 파일 25건 전체 통과) |
-| [ ] RED | TC-BND-006 | 5×5 행렬 — 테스트 파일 미작성 |
-| [ ] RED | TC-BND-DET-001 | `validate` ×2 결정론 — 미작성 |
-| [ ] RED | TC-BND-IMM-001 | validate 전후 grid 불변 — 미작성 |
+| [x] GREEN | TC-BND-006 | 5×5 행렬 → `INVALID_SIZE` |
+| [x] GREEN | TC-BND-DET-001 | `validate` ×2 결정론 |
+| [x] GREEN | TC-BND-IMM-001 | validate 전후 grid 불변 |
 
-**실행:** `python -m pytest tests/boundary/test_ac_fr01_01_invalid_size.py -v` → **25 passed**
+**실행:** `python -m pytest tests/boundary/test_ac_fr01_01_invalid_size.py -v` → **28 passed**
 
 ### Track A — Boundary / Control (GREEN 완료 9건)
 
