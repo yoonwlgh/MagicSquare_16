@@ -11,8 +11,8 @@ import pytest
 from boundary.magic_square.boundary_validator import BoundaryValidator
 from boundary.magic_square.contracts import (
     FORBIDDEN_OUT_OF_SCOPE_ERROR_CODES,
-    INVALID_SIZE_CODE,
-    INVALID_SIZE_MESSAGE,
+    ERR_INVALID_SHAPE_CODE,
+    ERR_INVALID_SHAPE_MESSAGE,
     BOUNDARY_LAYER,
     ErrorResponse,
 )
@@ -41,8 +41,8 @@ class TestAcFr0101NormalFailureReturn:
 
         # Then
         assert isinstance(result, ErrorResponse)
-        assert result.code == INVALID_SIZE_CODE
-        assert result.message == INVALID_SIZE_MESSAGE
+        assert result.code == ERR_INVALID_SHAPE_CODE
+        assert result.message == ERR_INVALID_SHAPE_MESSAGE
 
     # AC-FR-01-01
     def test_grid_none_failure_code_is_invalid_size_string(
@@ -58,7 +58,7 @@ class TestAcFr0101NormalFailureReturn:
 
         # Then
         assert result is not None
-        assert result.code == "INVALID_SIZE"
+        assert result.code == "ERR_INVALID_SHAPE"
 
     # AC-FR-01-01
     def test_grid_none_failure_message_is_grid_must_be_4x4(
@@ -74,7 +74,7 @@ class TestAcFr0101NormalFailureReturn:
 
         # Then
         assert result is not None
-        assert result.message == "Grid must be 4x4."
+        assert result.message == "Input must be a 4x4 integer matrix."
 
     # AC-FR-01-01
     def test_grid_none_failure_layer_is_boundary(
@@ -125,8 +125,8 @@ class TestAcFr0101BoundaryValues:
 
         # Then
         assert isinstance(result, ErrorResponse)
-        assert result.code == INVALID_SIZE_CODE
-        assert result.message == INVALID_SIZE_MESSAGE
+        assert result.code == ERR_INVALID_SHAPE_CODE
+        assert result.message == ERR_INVALID_SHAPE_MESSAGE
 
     # AC-FR-01-01
     def test_grid_four_empty_rows_returns_invalid_size_failure(
@@ -142,7 +142,7 @@ class TestAcFr0101BoundaryValues:
 
         # Then
         assert isinstance(result, ErrorResponse)
-        assert result.code == INVALID_SIZE_CODE
+        assert result.code == ERR_INVALID_SHAPE_CODE
 
     # AC-FR-01-01
     def test_grid_four_empty_rows_via_repeat_pattern_returns_invalid_size(
@@ -158,7 +158,7 @@ class TestAcFr0101BoundaryValues:
 
         # Then
         assert isinstance(result, ErrorResponse)
-        assert result.message == INVALID_SIZE_MESSAGE
+        assert result.message == ERR_INVALID_SHAPE_MESSAGE
 
     # AC-FR-01-01
     def test_grid_3x4_matrix_returns_invalid_size_failure(
@@ -174,8 +174,8 @@ class TestAcFr0101BoundaryValues:
 
         # Then
         assert isinstance(result, ErrorResponse)
-        assert result.code == INVALID_SIZE_CODE
-        assert result.message == INVALID_SIZE_MESSAGE
+        assert result.code == ERR_INVALID_SHAPE_CODE
+        assert result.message == ERR_INVALID_SHAPE_MESSAGE
 
     # AC-FR-01-01
     def test_grid_4x3_matrix_returns_invalid_size_failure(
@@ -191,7 +191,7 @@ class TestAcFr0101BoundaryValues:
 
         # Then
         assert isinstance(result, ErrorResponse)
-        assert result.code == INVALID_SIZE_CODE
+        assert result.code == ERR_INVALID_SHAPE_CODE
 
 
 class TestAcFr0101DomainIsolation:
@@ -276,7 +276,7 @@ class TestAcFr0101DomainIsolation:
 
         # Then
         assert isinstance(result, ErrorResponse)
-        assert result.code == INVALID_SIZE_CODE
+        assert result.code == ERR_INVALID_SHAPE_CODE
         assert domain_resolver_mock.resolve.call_count == 0
 
 
@@ -291,7 +291,7 @@ class TestAcFr0101MessageIdentity:
         """AC-FR-01-01, PRD §8.1 INVALID_SIZE — message equals contract constant."""
         # Given
         grid = None
-        expected = "Grid must be 4x4."
+        expected = "Input must be a 4x4 integer matrix."
 
         # When
         result = boundary_validator.validate(grid)
@@ -315,7 +315,7 @@ class TestAcFr0101MessageIdentity:
 
         # Then
         assert result is not None
-        assert list(result.message) == list(INVALID_SIZE_MESSAGE)
+        assert list(result.message) == list(ERR_INVALID_SHAPE_MESSAGE)
 
     # AC-FR-01-01
     def test_grid_four_empty_rows_message_no_extra_whitespace(
@@ -332,7 +332,7 @@ class TestAcFr0101MessageIdentity:
         # Then
         assert result is not None
         assert result.message.strip() == result.message
-        assert result.message == INVALID_SIZE_MESSAGE
+        assert result.message == ERR_INVALID_SHAPE_MESSAGE
 
     # AC-FR-01-01
     def test_grid_3x4_message_equals_invalid_size_constant(
@@ -348,8 +348,8 @@ class TestAcFr0101MessageIdentity:
 
         # Then
         assert result is not None
-        assert result.message == INVALID_SIZE_MESSAGE
-        assert repr(result.message) == repr("Grid must be 4x4.")
+        assert result.message == ERR_INVALID_SHAPE_MESSAGE
+        assert repr(result.message) == repr("Input must be a 4x4 integer matrix.")
 
     # AC-FR-01-01
     def test_grid_repeat_empty_rows_message_byte_identity(
@@ -365,7 +365,7 @@ class TestAcFr0101MessageIdentity:
 
         # Then
         assert result is not None
-        assert result.message.encode("utf-8") == INVALID_SIZE_MESSAGE.encode("utf-8")
+        assert result.message.encode("utf-8") == ERR_INVALID_SHAPE_MESSAGE.encode("utf-8")
 
 
 class TestAcFr0101ScopeRestriction:
@@ -433,7 +433,7 @@ class TestAcFr0101ScopeRestriction:
 
         # Then
         assert result is not None
-        assert result.code == INVALID_SIZE_CODE
+        assert result.code == ERR_INVALID_SHAPE_CODE
         assert result.code not in FORBIDDEN_OUT_OF_SCOPE_ERROR_CODES
 
     # AC-FR-01-01
@@ -489,8 +489,8 @@ class TestAcFr0101ExtendedBoundaryContract:
 
         # Then
         assert isinstance(result, ErrorResponse)
-        assert result.code == INVALID_SIZE_CODE
-        assert result.message == INVALID_SIZE_MESSAGE
+        assert result.code == ERR_INVALID_SHAPE_CODE
+        assert result.message == ERR_INVALID_SHAPE_MESSAGE
         assert result.layer == BOUNDARY_LAYER
 
     # TC-BND-DET-001

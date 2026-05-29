@@ -39,6 +39,5 @@ FORBIDDEN_OUT_OF_SCOPE_ERROR_CODES = frozenset(
         "ERR_OUT_OF_RANGE",
         "ERR_DUPLICATE_VALUE",
         "ERR_SOLVER_NO_SOLUTION",
-        "ERR_INVALID_SHAPE",
     }
 )

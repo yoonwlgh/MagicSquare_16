@@ -357,8 +357,8 @@ P0 테스트 보강 → P0 ECB 분리 → P1 SRP 분리 → P2 계약·중복·�
 |------|-----|------|------|------|
 | [x] | D-1 | `input_validator.py` / `boundary_validator.py` | Facade 중복 (OPEN-04) | 단일 진입점 통일 |
 | [x] | D-2 | `entity/constants.py` / `contracts.py` | `GRID_SIZE` 등 이중 정의 | entity SSOT → boundary re-export |
-| [ ] | D-3 | `boundary/magic_square/contracts.py` | OPEN-01: `INVALID_SIZE` vs `ERR_INVALID_SHAPE` | PRD 명칭 통일 + GM baseline 재approve |
-| [ ] | D-4 | `boundary/magic_square/boundary_validator.py` | `validate()` 단일 거대 함수 | A-3 GREEN 후 shape/blank/range/duplicate 메서드 추출 |
+| [x] | D-3 | `boundary/magic_square/contracts.py` | OPEN-01: `INVALID_SIZE` vs `ERR_INVALID_SHAPE` | PRD 명칭 통일 + GM baseline 재approve |
+| [x] | D-4 | `boundary/magic_square/boundary_validator.py` | `validate()` 단일 거대 함수 | A-3 GREEN 후 shape/blank/range/duplicate 메서드 추출 |
 
 ---
 
