@@ -22,3 +22,5 @@
 | **[14MagicSquare-GoldenMaster-Regression-Report.md](./14MagicSquare-GoldenMaster-Regression-Report.md)** | Golden Master GM-1~3 · approve 패턴 · GM-TC-01~05 · 80 passed · `stabilize/green` | 2026-05-29 | Golden Master 회귀 안전장치 완료 |
 | **[15MagicSquare-REFACTOR-Plan-Report.md](./15MagicSquare-REFACTOR-Plan-Report.md)** | 코드 리뷰 · SRP 점검 · REFACTOR 계획 · 테스트 선행 · README § REFACTOR | 2026-05-29 | REFACTOR 계획 수립 — 구현 미착수 |
 | **[16MagicSquare-REFACTOR-Execution-Report.md](./16MagicSquare-REFACTOR-Execution-Report.md)** | REFACTOR A~E 실행 · A-6 Presenter · cov gate · OPEN-01 · 101 passed · README 커버리지 | 2026-05-29 | REFACTOR 실행 완료 (`refactor/refactor`) |
+| **[17MagicSquare-Project-Retrospective-OnePage.md](./17MagicSquare-Project-Retrospective-OnePage.md)** | Report/01~16 기반 **한 장 회고** — 여정·성과·Keep/Problem/Learn·As-Is | 2026-05-29 | 프로젝트 회고 요약 |
+| **[18MagicSquare-Education-Retrospective.md](./18MagicSquare-Education-Retrospective.md)** | 교육용 회고록 (도움된 내용·첫 워크플로·막힘·팀·다음 주제·한 줄) | 2026-05-29 | 교육 회고 (지정 양식) |
