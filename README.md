@@ -365,6 +365,7 @@ ECB: UI는 `boundary/screen/` → `control/` → `entity/` 순으로 호출합�
 | [Report/10 — Dual-Track RED Skeleton](./Report/10MagicSquare-DualTrack-RED-Skeleton-Report.md) | U-IN/U-OUT/U-FLOW·D-* 스켈레톤 21건 | 2026-05-29 |
 | [Report/11 — AC-FR01-01 GREEN](./Report/11MagicSquare-AC-FR01-01-GREEN-Report.md) | I-1 GREEN 25건·체크리스트·21 failed 분석 | 2026-05-29 |
 | [Report/12 — Dual-Track GREEN + PyQt](./Report/12MagicSquare-DualTrack-GREEN-PyQt-Report.md) | 21건 GREEN·62 passed·PyQt GUI | 2026-05-29 |
+| [Report/14 — Golden Master 회귀](./Report/14MagicSquare-GoldenMaster-Regression-Report.md) | GM-1~3·approve·80 passed·GM-TC-01~05 | 2026-05-29 |
 | [docs/PRD_MagicSquare.md](./docs/PRD_MagicSquare.md) | 구현 전 PRD 본문 (23개 섹션) | 2026-05-29 |
 | [docs/README.md](./docs/README.md) | docs 인덱스 · RED To-Do · Golden Master (GM-1~3) | 2026-05-29 |
 | [docs/golden_master_approval_design.md](./docs/golden_master_approval_design.md) | Golden Master approve 패턴 설계 | 2026-05-29 |
