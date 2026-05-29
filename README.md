@@ -23,8 +23,8 @@
 | 7 | PRD 작성 + 7기준 검토 | ✅ 완료 | [Report/07](./Report/07MagicSquare-PRD-Development-and-Review-Report.md), [docs/PRD](./docs/PRD_MagicSquare.md) |
 | 8 | 마방진 도메인 구현 (Solver/Validator) | 🟡 진행 중 | AC-FR-01-01 GREEN 완료; Dual-Track 스켈레톤 GREEN 대기 |
 
-**코드 현황:** ECB `User` 슬라이스 **16 passed** + 마방진 Dual-Track **46건** (전체 GREEN).  
-**전체 pytest:** `62 collected` — **62 passed**.
+**코드 현황:** ECB `User` 슬라이스 **16 passed** + 마방진 Dual-Track **46건** + Golden Master **18건** (전체 GREEN).  
+**전체 pytest:** `80 collected` — **80 passed**.
 
 ---
 
@@ -168,6 +168,14 @@ MagicSquare_JH/
 python -m pytest tests/ -v
 ```
 
+Golden Master 회귀 테스트만 실행:
+
+```bash
+pytest -m golden_master -v
+```
+
+기준 파일 갱신: `python scripts/generate_golden_master.py` · 상세: [docs/README.md](./docs/README.md)
+
 ### HTML 테스트 리포트 (수동 갱신)
 
 `pytest`만 실행하면 **HTML 리포트는 자동으로 갱신되지 않습니다.**  
@@ -215,7 +223,8 @@ ECB: UI는 `boundary/screen/` → `control/` → `entity/` 순으로 호출합�
 | User ECB 슬라이스 | 16 | `test_user*.py` |
 | AC-FR-01-01 | 25 | `test_ac_fr01_01_invalid_size.py` |
 | Dual-Track U-IN/U-FLOW/U-OUT + D-* | 21 | Track A/B GREEN 완료 |
-| **합계** | **62 / 62** | `python -m pytest tests/ -v` |
+| Golden Master (GM-1~2) | 18 | `pytest -m golden_master -v` |
+| **합계** | **80 / 80** | `python -m pytest tests/ -v` |
 
 ### Cursor Rule (.cursor/rules/)
 
@@ -335,7 +344,8 @@ ECB: UI는 `boundary/screen/` → `control/` → `entity/` 순으로 호출합�
 - [x] defect_list.md 생성 — [defect_list.md](./defect_list.md)
 - [x] DEF-001~005 CLOSE — AC-FR-01-01 GREEN (`test_ac_fr01_01_invalid_size.py` 25 passed)
 - [x] DEF-006 이후 · Track A/B 스켈레톤 — Dual-Track GREEN 완료
-- [x] 전체 회귀 `python -m pytest tests/` → **62 passed**
+- [x] Golden Master GM-1~2 — `pytest -m golden_master` → **18 passed**
+- [x] 전체 회귀 `python -m pytest tests/` → **80 passed**
 
 ---
 
@@ -356,6 +366,8 @@ ECB: UI는 `boundary/screen/` → `control/` → `entity/` 순으로 호출합�
 | [Report/11 — AC-FR01-01 GREEN](./Report/11MagicSquare-AC-FR01-01-GREEN-Report.md) | I-1 GREEN 25건·체크리스트·21 failed 분석 | 2026-05-29 |
 | [Report/12 — Dual-Track GREEN + PyQt](./Report/12MagicSquare-DualTrack-GREEN-PyQt-Report.md) | 21건 GREEN·62 passed·PyQt GUI | 2026-05-29 |
 | [docs/PRD_MagicSquare.md](./docs/PRD_MagicSquare.md) | 구현 전 PRD 본문 (23개 섹션) | 2026-05-29 |
+| [docs/README.md](./docs/README.md) | docs 인덱스 · RED To-Do · Golden Master (GM-1~3) | 2026-05-29 |
+| [docs/golden_master_approval_design.md](./docs/golden_master_approval_design.md) | Golden Master approve 패턴 설계 | 2026-05-29 |
 | [Report/README.md](./Report/README.md) | Report 폴더 목차 | — |
 
 ---
