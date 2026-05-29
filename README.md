@@ -168,6 +168,8 @@ MagicSquare_JH/
 python -m pytest tests/ -v
 ```
 
+기본 실행 시 `pytest.ini`의 **커버리지 게이트**가 함께 동작합니다 (`--cov-fail-under=85`). 상세: [커버리지 (Coverage)](#커버리지-coverage).
+
 Golden Master 회귀 테스트만 실행:
 
 ```bash
@@ -199,6 +201,92 @@ python -m pytest tests/ -v `
 
 브라우저에서 예전 결과가 보이면 **파일을 닫았다가 다시 열거나** 새로고침하세요.
 
+### 커버리지 (Coverage)
+
+> **기준일:** 2026-05-29 · `python -m pytest tests/` → **101 passed**  
+> **도구:** `pytest-cov` (`requirements-dev.txt`) · 설정: [`pytest.ini`](./pytest.ini)
+
+#### 측정 범위 3단계
+
+| 범위 | 용도 | 명령 | Stmts | Cover | 85% gate |
+|------|------|------|------:|------:|:--------:|
+| **A. CI 게이트** | `pytest` 기본 (`addopts`) | `python -m pytest tests/` | 129 | **100%** | 통과 |
+| **B. 마방진 트랙** | FR-01~05 + Domain services 감사 | 아래 [확장 측정](#확장-측정-명령) | 209 | **98%** | — |
+| **C. 전체 ECB** | boundary + control + entity 전부 | 아래 [전체 측정](#전체-측정-명령) | 436 | **64%** | 미달 (의도) |
+
+- **A**는 마방진 **FR-01 검증·FR-05 출력·Control 오케스트레이션**만 포함합니다. REFACTOR E-2에서 PR마다 자동 검증하도록 고정했습니다.
+- **C**가 낮은 이유는 **PyQt 데스크톱 UI**(`boundary/screen/` 일부)가 단위 테스트 없이 **수동 스모크**만 하기 때문입니다. 비즈니스 로직 미달이 아닙니다.
+
+#### CI 게이트에 포함되는 패키지 (`pytest.ini`)
+
+| 패키지 | 역할 | Cover (A) |
+|--------|------|-----------|
+| `boundary.magic_square` | FR-01 `BoundaryValidator`, contracts | 100% |
+| `boundary.result_formatter` | FR-05 `ResultFormatter` | 100% |
+| `boundary.int6_contract_validator` | int[6] 계약 검증 | 100% |
+| `boundary.input_validator` | OPEN-04 facade (`BoundaryValidator` alias) | 100% |
+| `control` | `MagicSquareControl`, resolver, ports, `ApplicationError` | 100% |
+
+**게이트에서 제외한 항목**
+
+| 제외 대상 | 이유 |
+|-----------|------|
+| `boundary.screen` (PyQt) | GUI 레이아웃·이벤트 — `python -m boundary.screen` 수동 확인 |
+| `boundary.cli` (`UserCliBoundary`) | User ECB 슬라이스(16 tests) — 마방진 FR 게이트와 분리 |
+| `entity` | Control/Boundary 경유 E2E·Golden Master로 간접 검증; Domain 단위는 별도 `tests/entity/` |
+
+`pytest -m golden_master`만 실행하면 게이트 범위 **86.8%** (18 tests, U-OUT·일부 validator 분기 미실행). 전체 `tests/` 실행 시 **100%**이므로 **회귀는 전체 스위트 기준**으로 판단합니다.
+
+#### 확장 측정 명령
+
+마방진 + Domain services (범위 B, 목표 Domain 95% 근접):
+
+```powershell
+python -m pytest tests/ `
+  --cov=boundary.magic_square `
+  --cov=boundary.result_formatter `
+  --cov=boundary.int6_contract_validator `
+  --cov=boundary.input_validator `
+  --cov=control `
+  --cov=entity.services `
+  --cov-report=term-missing
+```
+
+| 모듈 | Cover | 미커버 라인 | 비고 |
+|------|------:|-------------|------|
+| `entity.services` (합산) | **98%** | — | |
+| `magic_square_validator.py` | 80% | 26, 29, 35 | 열·대각 실패 분기 — D-VAL-01~05는 행/완전 격자 위주 |
+| `solver.py` | 94% | 41, 45 | blank/missing 개수 방어 분기 — FR-01 통과 grid만 유입 |
+
+#### 전체 측정 명령
+
+HTML 리포트·레이어별 감사 (범위 C):
+
+```powershell
+python -m pytest tests/ `
+  --cov=boundary --cov=control --cov=entity `
+  --cov-report=html:htmlcov `
+  --cov-report=term-missing
+```
+
+| 영역 | Cover | 비고 |
+|------|------:|------|
+| `boundary` (magic_square·formatter·presenter 등) | ~99% | `presenter` A-6 unit test로 100% |
+| `boundary.screen` | **0%** | `app`, `main_window`, `layout_builder` 등 150 stmts — 수동 GUI |
+| `control` | **100%** | |
+| `entity` | **~97%** | `entity.user` User 슬라이스 포함 |
+| **TOTAL** | **64%** | PyQt 미측정 반영 시; 트랙 B만 보면 **98%** |
+
+#### 목표 대비 (프로젝트 규칙 · REFACTOR E-2)
+
+| 목표 | 기준 | 현재 | 상태 |
+|------|------|------|------|
+| Boundary (FR-01/05) | 85%+ | 게이트 **100%** | [x] |
+| Domain Logic | 95%+ | `entity.services` **98%** (validator 일부 분기 80%) | [x] 근접 |
+| 전체 TOTAL | 90%+ | 전체 ECB **64%** (PyQt 제외 시 ~98%) | [ ] UI 테스트 또는 `omit` 정책 후 재평가 |
+
+**후속 (선택):** `boundary.screen`용 headless Qt 테스트 · `.coveragerc` `omit`으로 게이트와 전체 감사 분리 · CI에서 범위 B를 별도 job으로 고정.
+
 ### PyQt GUI (수동 확인)
 
 4×4 격자 입력·검증·Solver 결과를 데스크톱에서 확인합니다.
@@ -220,11 +308,14 @@ ECB: UI는 `boundary/screen/` → `control/` → `entity/` 순으로 호출합�
 
 | 구분 | passed | 비고 |
 |------|--------|------|
-| User ECB 슬라이스 | 16 | `test_user*.py` |
-| AC-FR-01-01 | 25 | `test_ac_fr01_01_invalid_size.py` |
-| Dual-Track U-IN/U-FLOW/U-OUT + D-* | 21 | Track A/B GREEN 완료 |
-| Golden Master (GM-1~2) | 18 | `pytest -m golden_master -v` |
-| **합계** | **80 / 80** | `python -m pytest tests/ -v` |
+| User ECB 슬라이스 | 16 | `test_user*.py`, `test_user_cli_boundary.py` |
+| AC-FR-01-01 | 28 | `test_ac_fr01_01_invalid_size.py` |
+| U-IN / U-FLOW / U-OUT | 14 | `test_u_in_*`, `test_u_flow_*`, `test_u_out_*` |
+| Entity D-* (Track B) | 12 | `tests/entity/test_d_*.py` |
+| Control (마방진) | 5 | `test_magic_square_*`, `test_solver_error_mapper.py` |
+| Presenter (A-6) | 8 | `test_screen_presenter.py` |
+| Golden Master | 18 | `test_golden_master_*.py` (`pytest -m golden_master`) |
+| **합계** | **101** | `python -m pytest tests/ -v` · cov 게이트 **100%** (범위 A) |
 
 ### Cursor Rule (.cursor/rules/)
 
@@ -280,7 +371,7 @@ ECB: UI는 `boundary/screen/` → `control/` → `entity/` 순으로 호출합�
 
 > **전제:** `.cursorrules` REFACTOR phase — 외부 동작·계약·예외 의미 불변, 커버리지 80% 유지, GREEN 전체 통과 후 착수.  
 > **범위:** `control/`, `boundary/` (루트 ECB)  
-> **현재 baseline:** `93 passed` · `pytest -m golden_master` → 18 passed · `--cov-fail-under=85` (boundary FR-01/control)  
+> **현재 baseline:** `101 passed` · `pytest -m golden_master` → 18 passed · `--cov-fail-under=85` (boundary FR-01/control)  
 > **상세 보고서:** [Report/15 — REFACTOR 계획](./Report/15MagicSquare-REFACTOR-Plan-Report.md)  
 > **표기:** `[ ]` 미완 · `[x]` 완료 · **P0→P3** = 우선순위
 
@@ -312,7 +403,7 @@ P0 테스트 보강 → P0 ECB 분리 → P1 SRP 분리 → P2 계약·중복·�
 | [x] | A-3 | `test_ac_fr01_01_invalid_size.py` | TC-BND-006 (5×5), DET-001 (결정론×2), IMM-001 (grid 불변) |
 | [x] | A-4 | `test_u_flow_domain_isolation.py` | range·duplicate 실패 시 resolver spy 0회 |
 | [x] | A-5 | `test_u_out_result_format.py` | `to_int6()` negative — non-list, len≠6, 좌표 범위 → `ValueError` |
-| [ ] | A-6 | `test_screen_presenter.py` (선택) | validate/solve 위임, `format_*` 문자열 |
+| [x] | A-6 | `test_screen_presenter.py` (선택) | validate/solve 위임, `format_*` 문자열 |
 
 ---
 
@@ -386,7 +477,7 @@ Phase 2 (P2)
   [x] D-1 ~ D-4
   [x] C-2a, C-2b
   [x] E-1, E-2
-  [ ] (선택) A-6
+  [x] (선택) A-6
 
 Phase 3 (P3)
   [x] E-3
@@ -400,6 +491,7 @@ Phase 3 (P3)
 python -m pytest tests/ -v
 pytest -m golden_master -v
 python -m pytest tests/control/ tests/boundary/ tests/integration/ -v
+# 전체 레이어 감사 (게이트와 별도 — [커버리지](#커버리지-coverage) 범위 C)
 python -m pytest tests/ --cov=boundary --cov=control --cov=entity --cov-report=term-missing
 ```
 
@@ -483,9 +575,11 @@ python -m boundary.screen
 
 ### 커버리지 목표
 
-- [ ] Domain Logic: 95%+ (`pytest-cov`)
-- [ ] Boundary Layer: 85%+
-- [ ] 전체 TOTAL: 90%+
+> 상세 분석·명령·갭: [개발 환경 — 커버리지 (Coverage)](#커버리지-coverage)
+
+- [x] Boundary Layer (FR-01/05 게이트): **100%** — `pytest.ini` `--cov-fail-under=85`
+- [x] Domain Logic (`entity.services`): **98%** — `magic_square_validator` 열/대각 분기 일부 미실행
+- [ ] 전체 TOTAL (boundary+control+entity): **64%** — PyQt `boundary.screen` 미측정; 트랙만 보면 **98%**
 
 ### 결함 목록 연결
 
@@ -493,7 +587,7 @@ python -m boundary.screen
 - [x] DEF-001~005 CLOSE — AC-FR-01-01 GREEN (`test_ac_fr01_01_invalid_size.py` 25 passed)
 - [x] DEF-006 이후 · Track A/B 스켈레톤 — Dual-Track GREEN 완료
 - [x] Golden Master GM-1~2 — `pytest -m golden_master` → **18 passed**
-- [x] 전체 회귀 `python -m pytest tests/` → **80 passed**
+- [x] 전체 회귀 `python -m pytest tests/` → **101 passed**
 
 ---
 
@@ -515,6 +609,8 @@ python -m boundary.screen
 | [Report/12 — Dual-Track GREEN + PyQt](./Report/12MagicSquare-DualTrack-GREEN-PyQt-Report.md) | 21건 GREEN·62 passed·PyQt GUI | 2026-05-29 |
 | [Report/14 — Golden Master 회귀](./Report/14MagicSquare-GoldenMaster-Regression-Report.md) | GM-1~3·approve·80 passed·GM-TC-01~05 | 2026-05-29 |
 | [Report/15 — REFACTOR 계획](./Report/15MagicSquare-REFACTOR-Plan-Report.md) | 코드 리뷰·SRP·테스트 선행·REFACTOR 로드맵 | 2026-05-29 |
+| [Report/16 — REFACTOR 실행](./Report/16MagicSquare-REFACTOR-Execution-Report.md) | A~E·A-6·cov gate·101 passed·ERR_INVALID_SHAPE | 2026-05-29 |
+| [Prompt/16 — REFACTOR 실행 Transcript](./Prompt/16cursor_magicsquare_refactor_execution_transcript.md) | REFACTOR 실행 세션 Export | 2026-05-29 |
 | [docs/PRD_MagicSquare.md](./docs/PRD_MagicSquare.md) | 구현 전 PRD 본문 (23개 섹션) | 2026-05-29 |
 | [docs/README.md](./docs/README.md) | docs 인덱스 · RED To-Do · Golden Master (GM-1~3) | 2026-05-29 |
 | [docs/golden_master_approval_design.md](./docs/golden_master_approval_design.md) | Golden Master approve 패턴 설계 | 2026-05-29 |
