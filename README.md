@@ -354,6 +354,7 @@ ECB: UI는 `boundary/screen/` → `control/` → `entity/` 순으로 호출합�
 | [Report/09 — AC-FR01-01 RED·HTML](./Report/09MagicSquare-AC-FR01-01-RED-Test-HTML-Report.md) | RED 25건·venv·HTML·[defect_list.md](./defect_list.md) | 2026-05-29 |
 | [Report/10 — Dual-Track RED Skeleton](./Report/10MagicSquare-DualTrack-RED-Skeleton-Report.md) | U-IN/U-OUT/U-FLOW·D-* 스켈레톤 21건 | 2026-05-29 |
 | [Report/11 — AC-FR01-01 GREEN](./Report/11MagicSquare-AC-FR01-01-GREEN-Report.md) | I-1 GREEN 25건·체크리스트·21 failed 분석 | 2026-05-29 |
+| [Report/12 — Dual-Track GREEN + PyQt](./Report/12MagicSquare-DualTrack-GREEN-PyQt-Report.md) | 21건 GREEN·62 passed·PyQt GUI | 2026-05-29 |
 | [docs/PRD_MagicSquare.md](./docs/PRD_MagicSquare.md) | 구현 전 PRD 본문 (23개 섹션) | 2026-05-29 |
 | [Report/README.md](./Report/README.md) | Report 폴더 목차 | — |
 
