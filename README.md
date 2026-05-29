@@ -21,10 +21,10 @@
 | 5 | TODO Web 기술 스택 검토 | ✅ 완료 | [Report/05](./Report/05TodoWeb-Stack-Recommendation-Report.md) |
 | 6 | User Journey / Story / Scenario | ✅ 완료 | [Report/06](./Report/06MagicSquare-UserJourney-Story-Scenario-Report.md) |
 | 7 | PRD 작성 + 7기준 검토 | ✅ 완료 | [Report/07](./Report/07MagicSquare-PRD-Development-and-Review-Report.md), [docs/PRD](./docs/PRD_MagicSquare.md) |
-| 8 | 마방진 도메인 구현 (Solver/Validator) | ⏳ 미착수 | PRD FR-01~FR-05 기준 RED 테스트 대기 |
+| 8 | 마방진 도메인 구현 (Solver/Validator) | 🟡 진행 중 | AC-FR-01-01 GREEN 완료; Dual-Track 스켈레톤 GREEN 대기 |
 
-**코드 현황:** ECB 아키텍처 검증용 `User` 수직 슬라이스 구현 완료 — **16 tests passed** (pytest).  
-**마방진 Solver/Validator 본 구현은 PRD 기준으로 아직 착수 전입니다.**
+**코드 현황:** ECB `User` 슬라이스 **16 passed** + 마방진 Dual-Track **46건** (AC-FR-01-01 GREEN 25 + RED 스켈레톤 21).  
+**전체 pytest:** `62 collected` — **41 passed / 21 failed** (실패 21건은 RED 스켈레톤 `pytest.fail` 전용).
 
 ---
 
@@ -37,7 +37,8 @@ STEP 1~5 문제 정의
     → 규칙 .mdc 분할 + Prompt/Report 체계화
     → Epic → Journey → Story → Scenario 기획
     → PRD v0.1.0-draft + 7기준 검토
-    → [다음] Dual-Track TDD로 마방진 도메인 RED 착수
+    → AC-FR-01-01 GREEN (25/25) 완료
+    → [다음] Track A FR-01 후속(U-IN) → Track B Domain → U-OUT GREEN
 ```
 
 ---
@@ -190,7 +191,12 @@ python -m pytest tests/ -v `
 
 브라우저에서 예전 결과가 보이면 **파일을 닫았다가 다시 열거나** 새로고침하세요.
 
-현재 ECB 검증용 User 슬라이스: **16 passed**
+| 구분 | passed | 비고 |
+|------|--------|------|
+| User ECB 슬라이스 | 16 | `test_user*.py` |
+| AC-FR-01-01 (GREEN) | 25 | `test_ac_fr01_01_invalid_size.py` |
+| Dual-Track RED 스켈레톤 | 0 / 21 | `pytest.fail` — GREEN 미착수 |
+| **합계** | **41 / 62** | `python -m pytest tests/ -v` |
 
 ### Cursor Rule (.cursor/rules/)
 
@@ -235,42 +241,88 @@ python -m pytest tests/ -v `
 
 ## 다음 단계
 
-1. PRD 검토 P0 이슈 반영 (테스트 데이터 TD-01/TD-02, Traceability Matrix 보완)
-2. Story/Scenario 단위 **RED** 테스트 작성 (Boundary → Domain 순)
-3. Dual-Track TDD: Track A(Boundary Contract) + Track B(Domain Invariant)
-4. `BlankFinder` → `MissingNumberFinder` → `MagicSquareValidator` → `Solver` 순 구현
-5. Domain Logic 커버리지 95%+, Boundary 계약 테스트 100% 목표 (Epic 성공 기준)
+1. Track A **U-IN-04~08** GREEN (blank count / range / duplicate — AC-FR01-02~04)
+2. Track A **U-FLOW-02** GREEN (blank-count 실패 시 Domain 미호출)
+3. Track B **D-LOC-01 → D-MIS-01 → D-VAL-01~06 → D-SOL-01~04** GREEN
+4. Track A **U-OUT-01~03** GREEN (Solver 연동 후 `int[6]` 포맷)
+5. 커버리지 게이트: Domain 95%+, Boundary 85%+, 전체 90%+
 
 ---
 
-## RED 단계 To-Do 리스트
+## TDD 진행 체크리스트
 
-> 이 체크리스트는 test_plan.md 기반으로 생성되었습니다.
-> 각 항목은 RED(실패 테스트 작성) 완료 시 체크합니다.
+> 기준: [test_plan.md](./test_plan.md) · [defect_list.md](./defect_list.md)  
+> 표기: **RED** = 실패 테스트 작성 · **GREEN** = 최소 구현 통과 · `[ ]` = 미완 · `[x]` = 완료
 
-### Track A — UI / Boundary 테스트
-- [ ] TC-A-01: grid=None 입력 → 실패 결과 반환 (Happy Path of Failure)
-- [ ] TC-A-02: code가 정확히 "INVALID_SIZE" 문자열인지 검증
-- [ ] TC-A-03: message가 "Grid must be 4x4." 와 문자 단위 동일한지 검증
-- [ ] TC-A-04: grid=None 시 Domain 진입점 0회 호출 (mock/spy 검증)
-- [ ] TC-A-05: grid=[] 빈 리스트 → 실패 결과 반환
-- [ ] TC-A-06: grid=3×4 크기 불일치 → 실패 결과 반환
-- [ ] TC-A-07: 반환 객체 타입이 지정 실패 결과 구조체인지 검증
+### AC-FR-01-01 — 형태 검증 (I-1) · `test_ac_fr01_01_invalid_size.py`
 
-### Track B — Domain / Logic 테스트
-- [ ] TC-B-01: resolve()가 None grid를 직접 받지 않음을 격리 검증
-- [ ] TC-B-02: Boundary가 None 분기를 처리 후 resolve() 미호출 확인
-- [ ] TC-B-03: resolve() mock이 호출됐을 경우 테스트 실패 처리
-- [ ] TC-B-04: AC-FR-01-02~05 범위의 케이스는 이 커밋에 포함하지 않음 확인
+| 상태 | TC | 내용 |
+|------|-----|------|
+| [x] GREEN | TC-A-01 | `grid=None` → `INVALID_SIZE` / `Grid must be 4x4.` |
+| [x] GREEN | TC-A-02 | `code == "INVALID_SIZE"` 문자열 일치 |
+| [x] GREEN | TC-A-03 | `message` 문자 단위 일치 |
+| [x] GREEN | TC-A-04 | `grid=None` 시 `resolve()` 0회 (spy) |
+| [x] GREEN | TC-A-05 | `grid=[]` → 실패 |
+| [x] GREEN | TC-A-06 | 3×4 / 4×3 크기 불일치 → 실패 |
+| [x] GREEN | TC-A-07 | 반환 타입 `ErrorResponse` (pydantic) |
+| [x] GREEN | TC-B-01~03 | 형태 실패 시 Domain 격리 (`TestAcFr0101DomainIsolation`) |
+| [x] GREEN | TC-B-04 | AC-FR-01-02~05 오류 코드 미반환 확인 (`TestAcFr0101ScopeRestriction`) |
+| [x] GREEN | — | 메시지 동일성·layer=Boundary (동 파일 25건 전체 통과) |
+| [ ] RED | TC-BND-006 | 5×5 행렬 — 테스트 파일 미작성 |
+| [ ] RED | TC-BND-DET-001 | `validate` ×2 결정론 — 미작성 |
+| [ ] RED | TC-BND-IMM-001 | validate 전후 grid 불변 — 미작성 |
+
+**실행:** `python -m pytest tests/boundary/test_ac_fr01_01_invalid_size.py -v` → **25 passed**
+
+### Track A — Boundary / Control (GREEN 대기 9건)
+
+> RED 스켈레톤만 존재 — Given/When/Then 주석 + `pytest.fail`. GREEN 전 assert 활성화 필요.
+
+| 상태 | TC ID | 테스트 파일 | 내용 | AC |
+|------|-------|-------------|------|-----|
+| [ ] GREEN | U-IN-04 | `test_u_in_input_validation.py` | 빈칸 0개 → `ERR_INVALID_BLANK_COUNT` | AC-FR01-02 |
+| [ ] GREEN | U-IN-05 | 동일 | 빈칸 1개 → `ERR_INVALID_BLANK_COUNT` | AC-FR01-02 |
+| [ ] GREEN | U-IN-06 | 동일 | 빈칸 3개 → `ERR_INVALID_BLANK_COUNT` | AC-FR01-02 |
+| [ ] GREEN | U-IN-07 | 동일 | 값 17 → `ERR_OUT_OF_RANGE` | AC-FR01-03 |
+| [ ] GREEN | U-IN-08 | 동일 | non-zero 중복 → `ERR_DUPLICATE_VALUE` | AC-FR01-04 |
+| [ ] GREEN | U-FLOW-02 | `test_u_flow_domain_isolation.py` | blank-count 실패 시 Domain 0회 | BR-05 |
+| [ ] GREEN | U-OUT-01 | `test_u_out_result_format.py` | 성공 payload `len == 6` | AC-FR05-04 |
+| [ ] GREEN | U-OUT-02 | 동일 | 좌표 1-indexed (1..4) | AC-FR05-05 |
+| [ ] GREEN | U-OUT-03 | 동일 | `[r1,c1,n1,r2,c2,n2]` reverse 순서 | AC-FR05-02 |
+
+**권장 GREEN 순서:** U-IN-04~06 → U-IN-07 → U-IN-08 → U-FLOW-02 → (Track B Solver 후) U-OUT-01~03
+
+### Track B — Domain / Entity (GREEN 대기 12건)
+
+| 상태 | TC ID | 테스트 파일 | 내용 | FR |
+|------|-------|-------------|------|-----|
+| [ ] GREEN | D-LOC-01 | `test_d_loc_blank_finder.py` | `BlankFinder` row-major 2좌표 | FR-02 |
+| [ ] GREEN | D-MIS-01 | `test_d_mis_missing_number_finder.py` | `MissingNumberFinder` [small, large] | FR-03 |
+| [ ] GREEN | D-VAL-01 | `test_d_val_magic_square_validator.py` | 행 합 = 34 | FR-04 |
+| [ ] GREEN | D-VAL-02 | 동일 | 열 합 = 34 | FR-04 |
+| [ ] GREEN | D-VAL-03 | 동일 | 주대각 합 = 34 | FR-04 |
+| [ ] GREEN | D-VAL-04 | 동일 | 부대각 합 = 34 | FR-04 |
+| [ ] GREEN | D-VAL-05 | 동일 | 완전 마방진 → valid | FR-04 |
+| [ ] GREEN | D-VAL-06 | 동일 | 한 줄 합 ≠ 34 → invalid | FR-04 |
+| [ ] GREEN | D-SOL-01 | `test_d_sol_solver.py` | reverse 성공 `[3,3,6,4,4,1]` | FR-05 |
+| [ ] GREEN | D-SOL-02 | 동일 | small-first 성공 (G2 TBD) | FR-05 |
+| [ ] GREEN | D-SOL-03 | 동일 | 두 조합 실패 → no solution | FR-05 |
+| [ ] GREEN | D-SOL-04 | 동일 | solve 후 입력 grid 불변 | FR-05 |
+
+**권장 GREEN 순서:** D-LOC-01 → D-MIS-01 → D-VAL-01~06 → D-SOL-01~04
 
 ### 커버리지 목표
-- [ ] Domain Logic: 95%+ (pip install pytest-cov)
+
+- [ ] Domain Logic: 95%+ (`pytest-cov`)
 - [ ] Boundary Layer: 85%+
 - [ ] 전체 TOTAL: 90%+
 
 ### 결함 목록 연결
-- [x] defect_list.md 생성 및 발견 결함 기록 — [defect_list.md](./defect_list.md) (DEF-001~006, 24 failed → 5 root causes)
-- [ ] 모든 결함 수정 후 회귀 테스트 통과 확인
+
+- [x] defect_list.md 생성 — [defect_list.md](./defect_list.md)
+- [x] DEF-001~005 CLOSE — AC-FR-01-01 GREEN (`test_ac_fr01_01_invalid_size.py` 25 passed)
+- [ ] DEF-006 이후 · Track A/B 스켈레톤 결함 — GREEN 착수 시 갱신
+- [ ] 전체 회귀 `python -m pytest tests/` → 62 passed
 
 ---
 
@@ -288,6 +340,7 @@ python -m pytest tests/ -v `
 | [Report/08 — TDD 시작·To-Do](./Report/08MagicSquare-TDD-Start-ToDo-README-Report.md) | 샘플 AC-FR01-01 선정·추적 보드·README RED To-Do | 2026-05-29 |
 | [Report/09 — AC-FR01-01 RED·HTML](./Report/09MagicSquare-AC-FR01-01-RED-Test-HTML-Report.md) | RED 25건·venv·HTML·[defect_list.md](./defect_list.md) | 2026-05-29 |
 | [Report/10 — Dual-Track RED Skeleton](./Report/10MagicSquare-DualTrack-RED-Skeleton-Report.md) | U-IN/U-OUT/U-FLOW·D-* 스켈레톤 21건 | 2026-05-29 |
+| [Report/11 — AC-FR01-01 GREEN](./Report/11MagicSquare-AC-FR01-01-GREEN-Report.md) | I-1 GREEN 25건·체크리스트·21 failed 분석 | 2026-05-29 |
 | [docs/PRD_MagicSquare.md](./docs/PRD_MagicSquare.md) | 구현 전 PRD 본문 (23개 섹션) | 2026-05-29 |
 | [Report/README.md](./Report/README.md) | Report 폴더 목차 | — |
 
