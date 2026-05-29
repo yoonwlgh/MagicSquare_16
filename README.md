@@ -346,7 +346,7 @@ P0 테스트 보강 → P0 ECB 분리 → P1 SRP 분리 → P2 계약·중복·�
 
 | 상태 | ID | 대상 | 문제 | 조치 |
 |------|-----|------|------|------|
-| [ ] | C-2a | `boundary/screen/main_window.py:37,47` | Presenter 주입 + UI / 샘플 wiring 혼재 | Composition Root, `LayoutBuilder` |
+| [x] | C-2a | `boundary/screen/main_window.py:37,47` | Presenter 주입 + UI / 샘플 wiring 혼재 | Composition Root, `LayoutBuilder` |
 | [ ] | C-2b | `boundary/cli/user_cli_boundary.py:21` | 파싱 + Control + dict 직렬화 | `_parse_*` / `_serialize_*` (Extract Method) |
 
 ---

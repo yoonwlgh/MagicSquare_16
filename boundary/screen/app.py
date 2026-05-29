@@ -6,13 +6,13 @@ import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from boundary.screen.main_window import MagicSquareMainWindow
+from boundary.screen.composition_root import create_magic_square_main_window
 
 
 def main() -> int:
     """Launch the desktop GUI and return the Qt exit code."""
     app = QApplication(sys.argv)
-    window = MagicSquareMainWindow()
+    window = create_magic_square_main_window()
     window.show()
     return app.exec()
 
