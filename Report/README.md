@@ -13,3 +13,5 @@
 | **[05TodoWeb-Stack-Recommendation-Report.md](./05TodoWeb-Stack-Recommendation-Report.md)** | TODO Web 기술 스택 추천 보고서 | 2026-05-28 | 작성 완료 |
 | **[06MagicSquare-UserJourney-Story-Scenario-Report.md](./06MagicSquare-UserJourney-Story-Scenario-Report.md)** | Level 1~4 (Epic/Journey/Story/Scenario) 통합 보고서 | 2026-05-28 | 작성 완료 |
 | **[07MagicSquare-PRD-Development-and-Review-Report.md](./07MagicSquare-PRD-Development-and-Review-Report.md)** | PRD 작성·저장·7기준 검토 통합 보고서 | 2026-05-29 | 작성 완료 |
+| **[08MagicSquare-TDD-Start-ToDo-README-Report.md](./08MagicSquare-TDD-Start-ToDo-README-Report.md)** | TDD 시작 준비 — 샘플 선정·추적 보드·README 초안 통합 | 2026-05-29 | 작성 완료 |
+| **[09MagicSquare-AC-FR01-01-RED-Test-HTML-Report.md](./09MagicSquare-AC-FR01-01-RED-Test-HTML-Report.md)** | AC-FR01-01 RED pytest·venv·HTML·[defect_list.md](../defect_list.md) (DEF-001~006) 세션 통합 | 2026-05-29 | RED·결함 문서화 완료 — GREEN 미착수 |
