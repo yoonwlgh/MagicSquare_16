@@ -23,7 +23,11 @@ ERR_OUT_OF_RANGE_MESSAGE = "Cell values must be 0 or 1..16."
 ERR_DUPLICATE_VALUE_CODE = "ERR_DUPLICATE_VALUE"
 ERR_DUPLICATE_VALUE_MESSAGE = "Non-zero values must be unique."
 
+ERR_SOLVER_NO_SOLUTION_CODE = "ERR_SOLVER_NO_SOLUTION"
+ERR_SOLVER_NO_SOLUTION_MESSAGE = "No valid magic square combination found."
+
 BOUNDARY_LAYER = "Boundary"
+CONTROL_LAYER = "Control"
 
 FORBIDDEN_OUT_OF_SCOPE_ERROR_CODES = frozenset(
     {

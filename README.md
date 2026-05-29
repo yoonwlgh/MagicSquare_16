@@ -191,6 +191,25 @@ python -m pytest tests/ -v `
 
 브라우저에서 예전 결과가 보이면 **파일을 닫았다가 다시 열거나** 새로고침하세요.
 
+### PyQt GUI (수동 확인)
+
+4×4 격자 입력·검증·Solver 결과를 데스크톱에서 확인합니다.
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+python -m boundary.screen
+```
+
+| 버튼 | 동작 |
+|------|------|
+| **Validate (FR-01)** | 형태·빈칸·범위·중복 검증 — 실패 시 `code: message` 표시 |
+| **Solve (FR-05)** | 검증 통과 후 Solver — 성공 시 `Success: [r1,c1,n1,r2,c2,n2]` |
+| **Reverse / Small-first sample** | TD-01·TD-02 샘플 격자 로드 |
+| **Invalid blanks (×3)** | `ERR_INVALID_BLANK_COUNT` 확인용 |
+
+ECB: UI는 `boundary/screen/` → `control/` → `entity/` 순으로 호출합니다.
+
 | 구분 | passed | 비고 |
 |------|--------|------|
 | User ECB 슬라이스 | 16 | `test_user*.py` |
